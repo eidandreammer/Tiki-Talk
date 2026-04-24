@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import TacticalHero from './components/TacticalHero'
-import brandLogo from './assets/tttt-logo.png'
+import brandTitleLogo from './imgs/Tiki talk logo title.png'
 import { TEAMS } from './data/teams'
 import { pickRandomTeams } from './lib/tactics'
 
@@ -42,11 +42,11 @@ function App() {
     <div className="site-shell">
       <header className="site-header">
         <a className="site-brand" href="#home" aria-label="Tiki Taki Tiki Talk home">
-          <img className="site-brand__logo" src={brandLogo} alt="" />
-          <span className="site-brand__lockup">
-            <span className="site-brand__title">Tiki Taki Tiki Talk</span>
-            <span className="site-brand__subtitle">Soccer Podcast</span>
-          </span>
+          <img
+            className="site-brand__logo"
+            src={brandTitleLogo}
+            alt="Tiki Taki Tiki Talk"
+          />
         </a>
 
         <nav className="site-nav" aria-label="Primary">
@@ -56,7 +56,7 @@ function App() {
         </nav>
 
         <a className="button button--primary site-header__cta" href="#newsletter">
-          Paywall / Subscribe
+          Subscribe
         </a>
       </header>
 

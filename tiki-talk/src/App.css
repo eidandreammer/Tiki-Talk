@@ -13,53 +13,28 @@
   justify-content: space-between;
   gap: 16px;
   padding: 18px 0;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(255, 250, 243, 0.84)),
-    rgba(255, 255, 255, 0.82);
+  background: #ffffff;
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--color-line);
   box-shadow: 0 18px 44px rgba(26, 36, 95, 0.05);
 }
 
 .site-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  color: var(--color-ink);
-  font-family: var(--font-heading);
-  font-weight: 700;
-  letter-spacing: -0.04em;
+  display: block;
+  flex: 0 0 auto;
+  width: clamp(184px, 21vw, 256px);
 }
 
 .site-brand__logo {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-  border-radius: 24px;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3.1 / 1;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0;
   background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(68, 82, 167, 0.14);
-  box-shadow:
-    0 16px 34px rgba(26, 36, 95, 0.08),
-    0 0 0 8px rgba(255, 255, 255, 0.38);
-}
-
-.site-brand__lockup {
-  display: grid;
-  gap: 2px;
-}
-
-.site-brand__title {
-  font-size: 1.18rem;
-  line-height: 1;
-}
-
-.site-brand__subtitle {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(68, 82, 167, 0.78);
+  border: none;
+  box-shadow: none;
 }
 
 .site-nav {
@@ -67,6 +42,7 @@
   align-items: center;
   gap: 28px;
   margin-left: auto;
+  background-color: #ffffff;
 }
 
 .site-nav a {
@@ -529,21 +505,11 @@
   }
 
   .site-brand {
-    gap: 10px;
+    width: min(192px, 58vw);
   }
 
   .site-brand__logo {
-    width: 58px;
-    height: 58px;
-    border-radius: 18px;
-  }
-
-  .site-brand__title {
-    font-size: 1rem;
-  }
-
-  .site-brand__subtitle {
-    font-size: 0.66rem;
+    border-radius: 0;
   }
 
   .hero h1 {

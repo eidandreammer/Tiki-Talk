@@ -21,13 +21,7 @@
   line-height: 1.5;
   font-weight: 400;
   color: var(--color-ink);
-  background:
-    radial-gradient(circle at 11% 12%, rgba(66, 170, 71, 0.14), transparent 20%),
-    radial-gradient(circle at 88% 10%, rgba(243, 112, 33, 0.14), transparent 22%),
-    radial-gradient(circle at 12% 82%, rgba(68, 82, 167, 0.15), transparent 24%),
-    radial-gradient(circle at 90% 86%, rgba(253, 202, 18, 0.16), transparent 22%),
-    radial-gradient(circle at 50% 48%, rgba(230, 34, 40, 0.08), transparent 26%),
-    linear-gradient(180deg, #fffdf8 0%, #fff7ef 100%);
+  background-color: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -42,12 +36,14 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: #ffffff;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100svh;
+  background-color: #ffffff;
 }
 
 a {
@@ -83,4 +79,5 @@ p {
 
 #root {
   min-height: 100svh;
+  background-color: #ffffff;
 }
