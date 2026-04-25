@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import './App.css'
 import TacticalHero from './components/TacticalHero'
-import brandMark from './imgs/Tiki talk logo wo background.png'
 import { TEAMS } from './data/teams'
 import { pickRandomTeams } from './lib/tactics'
 
@@ -40,26 +39,6 @@ function App() {
 
   return (
     <div className="site-shell">
-      <header className="site-header">
-        <div className="site-frame site-header__inner">
-          <a className="site-brand" href="#home" aria-label="Tiki Taki Tiki Talk home">
-            <span className="site-brand__copy">
-              <span className="site-brand__name">Tiki Taki Tiki Talk</span>
-            </span>
-          </a>
-
-          <nav className="site-nav" aria-label="Primary">
-            <a href="#home">Home</a>
-            <a href="#about">About</a>
-            <a href="#newsletter">Newsletter</a>
-          </nav>
-
-          <a className="button button--primary site-header__cta" href="#newsletter">
-            Subscribe
-          </a>
-        </div>
-      </header>
-
       <main>
         <TacticalHero matchup={matchup} />
 
