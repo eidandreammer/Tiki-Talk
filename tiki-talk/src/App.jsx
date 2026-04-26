@@ -1,8 +1,5 @@
-import { useState } from 'react'
 import './App.css'
 import TacticalHero from './components/TacticalHero'
-import { TEAMS } from './data/teams'
-import { pickRandomTeams } from './lib/tactics'
 
 const NOTEBOOK_CARDS = [
   {
@@ -22,12 +19,6 @@ const NOTEBOOK_CARDS = [
   },
 ]
 
-const BROADCAST_METRICS = [
-  { value: '03', label: 'drops each week' },
-  { value: '22', label: 'magnetic nodes in play' },
-  { value: '90', label: 'minutes under review' },
-]
-
 const SUBSCRIBER_PERKS = [
   'Tactical notebooks published after every episode',
   'Weekly member-only newsletter with clips and diagrams',
@@ -35,69 +26,57 @@ const SUBSCRIBER_PERKS = [
 ]
 
 function App() {
-  const [matchup] = useState(() => pickRandomTeams(TEAMS))
-
   return (
     <div className="site-shell">
       <main>
-        <TacticalHero matchup={matchup} />
+        <TacticalHero />
 
-        <section className="section section--split" id="about">
+        <section className="section section--podcast-intro" id="about">
           <div className="site-frame section__inner">
-            <div className="section__intro">
-              <p className="eyebrow">About The Show</p>
-              <h2>Editorial football, structured like a clean passing move.</h2>
-              <p className="section__lede">
-                Tiki Taki Tiki Talk is a soccer podcast about rhythm, structure, and the
-                stories that bend matches out of shape. One refresh gives you{' '}
-                <strong>{matchup.attack.name}</strong> building from the back and{' '}
-                <strong>{matchup.defense.name}</strong> trying to shut the lane.
+            <div className="podcast-intro">
+              <p className="eyebrow">About The Podcast</p>
+              <h2>Football conversation built around the way the game moves.</h2>
+              <p className="podcast-intro__lede">
+                Tiki Taki Tiki Talk is a football podcast about tactics, rhythm,
+                and the small decisions that change a match. We break down the
+                ideas behind the game in a way that stays sharp, simple, and fun
+                to follow.
               </p>
             </div>
-
-            <div className="section__content">
-              <div className="metric-row" aria-label="Podcast metrics">
-                {BROADCAST_METRICS.map((metric) => (
-                  <article className="metric-card" key={metric.label}>
-                    <span className="metric-card__value">{metric.value}</span>
-                    <span className="metric-card__label">{metric.label}</span>
-                  </article>
-                ))}
-              </div>
-
-              <div className="copy-grid">
-                <p>
-                  The voice is editorial and direct. The visual language stays
-                  spare: bold type, quiet separators, and enough restraint to make
-                  the argument land.
-                </p>
-                <p>
-                  The hero image sets the tone. A horizontal stadium frame opens
-                  the page before the notebooks, metrics, and premium notes take
-                  over.
-                </p>
-              </div>
-            </div>
           </div>
         </section>
 
-        <section className="section">
-          <div className="site-frame section__inner">
-            <div className="section__intro">
-              <p className="eyebrow">What Members Get</p>
-              <h2>The notebook behind the microphone.</h2>
-            </div>
-
-            <div className="card-grid">
-              {NOTEBOOK_CARDS.map((card) => (
-                <article className="info-card" key={card.title}>
-                  <h3>{card.title}</h3>
-                  <p>{card.body}</p>
+        <section className="section section--origin">
+          <div className="site-frame">
+            <div className="origin-panel">
+              <div className="origin-panel__grid">
+                <article className="origin-note">
+                  <h3>Why we chose the name</h3>
+                  <p>
+                    We chose &quot;Tiki Taka Tiki Talk&quot; because the title sounds
+                    like the game we love: quick, connected, and full of rhythm.
+                    It turns a famous football idea into conversation, which fits a
+                    podcast built on sharp passing of ideas between hosts and
+                    listeners.
+                  </p>
                 </article>
-              ))}
+
+                <article className="origin-note">
+                  <h3>What tiki-taka means</h3>
+                  <p>
+                    Tiki-taka is a football strategy based on short passing,
+                    constant movement, close support, and patient possession. The
+                    goal is to control space and tempo by keeping the ball moving,
+                    creating triangles, and pulling opponents out of shape before
+                    finding the opening.
+                  </p>
+                </article>
+              </div>
             </div>
           </div>
         </section>
+
+       
 
         <section className="section section--newsletter" id="newsletter">
           <div className="site-frame section__inner">

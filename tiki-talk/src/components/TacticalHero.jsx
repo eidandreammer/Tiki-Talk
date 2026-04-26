@@ -1,6 +1,6 @@
 import heroBackground from '../imgs/hero section backgroun.png'
 
-function TacticalHero({ matchup }) {
+function TacticalHero() {
   return (
     <section
       className="hero"
@@ -27,7 +27,10 @@ function TacticalHero({ matchup }) {
         <div className="hero__content">
           <div className="hero__copy">
             <h1>Editorial football with a wide view of the match.</h1>
-            <p>.</p>
+            <p className="hero__lede">
+              A podcast about football ideas, match rhythm, and the tactical details
+              that shape every result.
+            </p>
           </div>
         </div>
       </div>

@@ -320,6 +320,46 @@
   border-bottom: 1px solid var(--color-line);
 }
 
+.section--podcast-intro,
+.section--origin {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.section--podcast-intro {
+  background:
+    radial-gradient(circle at top right, rgba(0, 0, 0, 0.04), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(255, 255, 255, 0.94));
+}
+
+.section--podcast-intro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url('/brand/tttt-logo-bw.png');
+  background-position: right clamp(-136px, -8vw, -56px) center;
+  background-repeat: no-repeat;
+  background-size: clamp(440px, 46vw, 860px);
+  opacity: 0.15;
+}
+
+.section--origin {
+  padding: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.05), transparent 30%),
+    linear-gradient(180deg, #131517 0%, #090a0b 100%);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.section--podcast-intro > .site-frame,
+.section--origin > .site-frame {
+  position: relative;
+  z-index: 1;
+}
+
 .section__inner {
   display: grid;
   gap: 32px;
@@ -332,6 +372,58 @@
 
 .section__intro {
   max-width: 34rem;
+}
+
+.origin-panel {
+  position: relative;
+  display: grid;
+  gap: 34px;
+  padding: 78px 0;
+  color: var(--color-paper);
+}
+
+.podcast-intro {
+  max-width: 46rem;
+}
+
+.podcast-intro h2 {
+  margin: 0 0 16px;
+  font-size: clamp(2.5rem, 4.2vw, 4.6rem);
+  line-height: 0.96;
+}
+
+.podcast-intro__lede {
+  max-width: 42rem;
+  font-size: 1.05rem;
+  color: var(--color-ink-soft);
+}
+
+.origin-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.origin-note {
+  position: relative;
+  overflow: hidden;
+  min-height: 100%;
+  padding: 28px;
+  border: 1px solid var(--color-line);
+  border-radius: 5px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.92));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.08);
+}
+
+.origin-note h3 {
+  margin: 0 0 14px;
+  font-size: 1.42rem;
+  line-height: 1.02;
+  color: var(--color-ink);
+}
+
+.origin-note p {
+  color: var(--color-ink-soft);
 }
 
 .section__intro h2,
@@ -365,6 +457,10 @@
   width: 36px;
   height: 1px;
   background: currentColor;
+}
+
+.eyebrow--light {
+  color: rgba(255, 255, 255, 0.62);
 }
 
 .metric-row {
@@ -503,6 +599,10 @@
     grid-template-columns: 1fr;
   }
 
+  .origin-panel__grid {
+    grid-template-columns: 1fr;
+  }
+
   .hero__copy,
   .hero__actions-shell {
     grid-column: auto;
@@ -620,6 +720,14 @@
 
   .section {
     padding: 56px 0;
+  }
+
+  .origin-panel {
+    padding: 60px 0;
+  }
+
+  .origin-note {
+    padding: 22px;
   }
 
   .newsletter-panel {
