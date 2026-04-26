@@ -28,6 +28,22 @@ const SUBSCRIBER_PERKS = [
 function App() {
   return (
     <div className="site-shell">
+      <header className="site-header">
+        <div className="site-frame site-header__inner">
+          <div className="site-nav-island">
+            <nav className="site-nav" aria-label="Primary">
+              <a href="#home">Home</a>
+              <a href="#about">About</a>
+              <a href="#newsletter">Newsletter</a>
+            </nav>
+
+            <a className="button button--primary site-nav-island__cta" href="#newsletter">
+              Subscribe
+            </a>
+          </div>
+        </div>
+      </header>
+
       <main>
         <TacticalHero />
 
@@ -90,6 +106,14 @@ function App() {
                 </p>
               </div>
 
+              <div className="newsletter-panel__perks">
+                <ul className="perk-list" aria-label="Subscriber perks">
+                  {SUBSCRIBER_PERKS.map((perk) => (
+                    <li key={perk}>{perk}</li>
+                  ))}
+                </ul>
+              </div>
+
               <form className="newsletter-form" onSubmit={(event) => event.preventDefault()}>
                 <label className="sr-only" htmlFor="email">
                   Email address
@@ -105,12 +129,6 @@ function App() {
                   Join The List
                 </button>
               </form>
-
-              <div className="perk-list" aria-label="Subscriber perks">
-                {SUBSCRIBER_PERKS.map((perk) => (
-                  <p key={perk}>{perk}</p>
-                ))}
-              </div>
             </div>
           </div>
         </section>
