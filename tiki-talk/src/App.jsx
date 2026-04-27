@@ -1,23 +1,6 @@
 import './App.css'
+import SiteFooter from './components/SiteFooter'
 import TacticalHero from './components/TacticalHero'
-
-const NOTEBOOK_CARDS = [
-  {
-    title: 'Match Film, Not Hot Takes',
-    body:
-      'Every episode starts from the tape. The arguments come after the freeze-frame, not before it.',
-  },
-  {
-    title: 'Tactical Shape, Cultural Noise',
-    body:
-      'We move from pressing triggers and half-spaces into dressing-room politics, transfer tension, and tournament mood.',
-  },
-  {
-    title: 'Built For Paying Members',
-    body:
-      'The landing page stays open. The sharpest breakdowns, chalkboard notes, and listener mail live behind the wall.',
-  },
-]
 
 const SUBSCRIBER_PERKS = [
   'Tactical notebooks published after every episode',
@@ -133,6 +116,8 @@ function App() {
           </div>
         </section>
       </main>
+
+      <SiteFooter />
     </div>
   )
 }
