@@ -3,8 +3,8 @@ import joinUsImage from '../imgs/Join us.png'
 const FOOTER_LINKS = [
   { label: 'Home', href: '#home' },
   { label: 'About', href: '#about' },
+  { label: 'Club', href: '#club' },
   { label: 'Newsletter', href: '#newsletter' },
-  { label: 'Premium Wall', href: '#newsletter' },
 ]
 
 const SOCIAL_LINKS = [
@@ -59,7 +59,7 @@ function SiteFooter() {
         <div className="site-footer__panel">
           <div className="site-footer__art">
             <div className="site-footer__art-card">
-              <img className="site-footer__art-image" src={joinUsImage} alt="Join us" />
+              <img className="site-footer__art-image" src={joinUsImage} alt="Join our club" />
             </div>
           </div>
 
@@ -75,32 +75,21 @@ function SiteFooter() {
           </nav>
 
           <div className="site-footer__subscribe" id="footer-subscribe">
-            <p className="site-footer__label">Subscribe</p>
-            <h2>Join the Tiki Taki Tiki Talk list.</h2>
+            <p className="site-footer__label">Choose Your Access</p>
+            <h2>Newsletter for updates. Club for exclusive access.</h2>
             <p className="site-footer__subscribe-copy">
-              Sign up with your email address to get episode drops, match notes,
-              and premium-wall updates.
+              Keep the free newsletter for new content and podcast information,
+              or step into the club for exclusive content and early access.
             </p>
 
-            <form className="site-footer__form" onSubmit={(event) => event.preventDefault()}>
-              <label className="sr-only" htmlFor="footer-email">
-                Email address
-              </label>
-              <input
-                id="footer-email"
-                name="footer-email"
-                type="email"
-                autoComplete="email"
-                placeholder="Email address"
-              />
-              <button className="button button--footer" type="submit">
-                Subscribe
-              </button>
-            </form>
-
-            <p className="site-footer__disclaimer">
-              Football, tactics, and subscriber-only extras sent cleanly to one inbox.
-            </p>
+            <div className="site-footer__actions">
+              <a className="button button--footer" href="#newsletter">
+                Newsletter
+              </a>
+              <a className="button button--ghost" href="#club">
+                Join Club
+              </a>
+            </div>
           </div>
 
           <div className="site-footer__social">
