@@ -35,8 +35,8 @@ function App() {
             <nav className="site-nav" aria-label="Primary">
               <a href="#home">Home</a>
               <a href="#about">About</a>
-              <a href="#club">Club</a>
               <a href="#newsletter">Newsletter</a>
+              <a href="#club">Club</a>
             </nav>
 
             <a className="button button--primary site-nav-island__cta" href="#club">
@@ -95,6 +95,53 @@ function App() {
         </section>
 
        
+
+        <section className="section section--newsletter" id="newsletter">
+          <div className="site-frame">
+            <div className="newsletter-feature">
+              <div className="newsletter-feature__media">
+                <img
+                  className="newsletter-feature__image"
+                  src={ginoImage}
+                  alt="Gino standing in a suit"
+                />
+              </div>
+
+              <div className="newsletter-feature__content">
+                <p className="eyebrow eyebrow--light">Newsletter</p>
+                <h2>Receive new content alerts and podcast information first.</h2>
+                <p className="newsletter-feature__lede">
+                  The newsletter is the free side of the landing page. It is
+                  where listeners can subscribe to receive notifications about new
+                  content, episode drops, and important information about the
+                  podcast.
+                </p>
+
+                <ul className="feature-list" aria-label="Newsletter benefits">
+                  {NEWSLETTER_BENEFITS.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+
+                <form className="newsletter-form" onSubmit={(event) => event.preventDefault()}>
+                  <label className="sr-only" htmlFor="email">
+                    Email address
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="Email address"
+                  />
+                  <button className="button button--light" type="submit">
+                    Subscribe
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <section className="section section--club" id="club">
           <div className="site-frame section__inner">
@@ -157,53 +204,6 @@ function App() {
                     </article>
                   ))}
                 </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="section section--newsletter" id="newsletter">
-          <div className="site-frame">
-            <div className="newsletter-feature">
-              <div className="newsletter-feature__media">
-                <img
-                  className="newsletter-feature__image"
-                  src={ginoImage}
-                  alt="Gino standing in a suit"
-                />
-              </div>
-
-              <div className="newsletter-feature__content">
-                <p className="eyebrow eyebrow--light">Newsletter</p>
-                <h2>Receive new content alerts and podcast information first.</h2>
-                <p className="newsletter-feature__lede">
-                  The newsletter is the free side of the landing page. It is
-                  where listeners can subscribe to receive notifications about new
-                  content, episode drops, and important information about the
-                  podcast.
-                </p>
-
-                <ul className="feature-list" aria-label="Newsletter benefits">
-                  {NEWSLETTER_BENEFITS.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-
-                <form className="newsletter-form" onSubmit={(event) => event.preventDefault()}>
-                  <label className="sr-only" htmlFor="email">
-                    Email address
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    placeholder="Email address"
-                  />
-                  <button className="button button--light" type="submit">
-                    Subscribe
-                  </button>
-                </form>
               </div>
             </div>
           </div>

@@ -3,8 +3,8 @@ import joinUsImage from '../imgs/Join us.png'
 const FOOTER_LINKS = [
   { label: 'Home', href: '#home' },
   { label: 'About', href: '#about' },
-  { label: 'Club', href: '#club' },
   { label: 'Newsletter', href: '#newsletter' },
+  { label: 'Club', href: '#club' },
 ]
 
 const SOCIAL_LINKS = [
