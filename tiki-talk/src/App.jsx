@@ -27,8 +27,58 @@ const CLUB_HIGHLIGHTS = [
   },
 ]
 
+const FORM_CONFIG = {
+  newsletter: {
+    webhookUrl: import.meta.env.VITE_N8N_NEWSLETTER_WEBHOOK_URL ?? '',
+    source: 'newsletter',
+    successMessage: 'Newsletter signup saved. You are on the list for the next drop.',
+    missingConfigMessage: 'Newsletter webhook URL is missing. Add VITE_N8N_NEWSLETTER_WEBHOOK_URL.',
+    fallbackErrorMessage: 'We could not save your newsletter signup. Try again in a moment.',
+  },
+  club: {
+    webhookUrl: import.meta.env.VITE_N8N_CLUB_WEBHOOK_URL ?? '',
+    source: 'club',
+    successMessage: 'Club request saved. We will use this email for members access updates.',
+    missingConfigMessage: 'Club webhook URL is missing. Add VITE_N8N_CLUB_WEBHOOK_URL.',
+    fallbackErrorMessage: 'We could not save your club request. Try again in a moment.',
+  },
+}
+
+function createLeadFormState() {
+  return {
+    email: '',
+    status: 'idle',
+    message: '',
+  }
+}
+
+async function submitLead(webhookUrl, payload) {
+  const body = new FormData()
+
+  Object.entries(payload).forEach(([key, value]) => {
+    body.set(key, value)
+  })
+
+  const response = await fetch(webhookUrl, {
+    method: 'POST',
+    body,
+  })
+
+  const responseData = await response.json().catch(() => null)
+
+  if (!response.ok) {
+    throw new Error(responseData?.message || 'Request failed')
+  }
+
+  return responseData
+}
+
 function App() {
   const [isFooterVisible, setIsFooterVisible] = useState(false)
+  const [leadForms, setLeadForms] = useState({
+    newsletter: createLeadFormState(),
+    club: createLeadFormState(),
+  })
 
   useEffect(() => {
     const footerPanel = document.querySelector('.site-footer__panel')
@@ -50,6 +100,80 @@ function App() {
 
     return () => observer.disconnect()
   }, [])
+
+  const updateLeadForm = (formKey, nextState) => {
+    setLeadForms((currentState) => ({
+      ...currentState,
+      [formKey]: {
+        ...currentState[formKey],
+        ...nextState,
+      },
+    }))
+  }
+
+  const handleLeadInputChange = (formKey) => (event) => {
+    updateLeadForm(formKey, {
+      email: event.target.value,
+      status: 'idle',
+      message: '',
+    })
+  }
+
+  const handleLeadSubmit = (formKey) => async (event) => {
+    event.preventDefault()
+
+    const formConfig = FORM_CONFIG[formKey]
+    const email = leadForms[formKey].email.trim().toLowerCase()
+
+    if (!email) {
+      updateLeadForm(formKey, {
+        status: 'error',
+        message: 'Enter a valid email address before submitting.',
+      })
+
+      return
+    }
+
+    if (!formConfig.webhookUrl) {
+      updateLeadForm(formKey, {
+        status: 'error',
+        message: formConfig.missingConfigMessage,
+      })
+
+      return
+    }
+
+    updateLeadForm(formKey, {
+      status: 'submitting',
+      message: '',
+    })
+
+    try {
+      const responseData = await submitLead(formConfig.webhookUrl, {
+        email,
+        source: formConfig.source,
+        pageUrl: window.location.href,
+        submittedAt: new Date().toISOString(),
+      })
+
+      updateLeadForm(formKey, {
+        email: '',
+        status: 'success',
+        message: responseData?.message || formConfig.successMessage,
+      })
+    } catch (error) {
+      updateLeadForm(formKey, {
+        status: 'error',
+        message:
+          error instanceof Error && error.message
+            ? error.message
+            : formConfig.fallbackErrorMessage,
+      })
+    }
+  }
+
+  const newsletterForm = leadForms.newsletter
+  const clubForm = leadForms.club
 
   return (
     <div className="site-shell">
@@ -146,7 +270,7 @@ function App() {
                   ))}
                 </ul>
 
-                <form className="newsletter-form" onSubmit={(event) => event.preventDefault()}>
+                <form className="newsletter-form" onSubmit={handleLeadSubmit('newsletter')}>
                   <label className="sr-only" htmlFor="email">
                     Email address
                   </label>
@@ -156,10 +280,31 @@ function App() {
                     type="email"
                     autoComplete="email"
                     placeholder="Email address"
+                    required
+                    value={newsletterForm.email}
+                    onChange={handleLeadInputChange('newsletter')}
+                    disabled={newsletterForm.status === 'submitting'}
+                    aria-invalid={newsletterForm.status === 'error'}
+                    aria-describedby={
+                      newsletterForm.message ? 'newsletter-form-feedback' : undefined
+                    }
                   />
-                  <button className="button button--light" type="submit">
-                    Subscribe
+                  <button
+                    className="button button--light"
+                    type="submit"
+                    disabled={newsletterForm.status === 'submitting'}
+                  >
+                    {newsletterForm.status === 'submitting' ? 'Saving...' : 'Subscribe'}
                   </button>
+                  {newsletterForm.message ? (
+                    <p
+                      className={`form-feedback form-feedback--${newsletterForm.status}`}
+                      id="newsletter-form-feedback"
+                      role={newsletterForm.status === 'error' ? 'alert' : 'status'}
+                    >
+                      {newsletterForm.message}
+                    </p>
+                  ) : null}
                 </form>
               </div>
             </div>
@@ -198,7 +343,7 @@ function App() {
                 <form
                   className="club-form"
                   id="club-access-form"
-                  onSubmit={(event) => event.preventDefault()}
+                  onSubmit={handleLeadSubmit('club')}
                 >
                   <label className="sr-only" htmlFor="club-email">
                     Email address for club access
@@ -209,10 +354,29 @@ function App() {
                     type="email"
                     autoComplete="email"
                     placeholder="Email for club access"
+                    required
+                    value={clubForm.email}
+                    onChange={handleLeadInputChange('club')}
+                    disabled={clubForm.status === 'submitting'}
+                    aria-invalid={clubForm.status === 'error'}
+                    aria-describedby={clubForm.message ? 'club-form-feedback' : undefined}
                   />
-                  <button className="button button--primary" type="submit">
-                    Join Club
+                  <button
+                    className="button button--primary"
+                    type="submit"
+                    disabled={clubForm.status === 'submitting'}
+                  >
+                    {clubForm.status === 'submitting' ? 'Saving...' : 'Join Club'}
                   </button>
+                  {clubForm.message ? (
+                    <p
+                      className={`form-feedback form-feedback--${clubForm.status}`}
+                      id="club-form-feedback"
+                      role={clubForm.status === 'error' ? 'alert' : 'status'}
+                    >
+                      {clubForm.message}
+                    </p>
+                  ) : null}
                 </form>
                 <ul className="perk-list" aria-label="Club benefits">
                   {CLUB_PERKS.map((perk) => (
