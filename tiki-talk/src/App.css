@@ -179,14 +179,14 @@
 }
 
 .button--footer {
-  background: var(--color-paper);
-  color: var(--color-brand);
+  background: #1b1a1a;
+  color: var(--color-paper);
   box-shadow: none;
 }
 
 .button--footer:hover,
 .button--footer:focus-visible {
-  background: rgba(255, 255, 255, 0.88);
+  background: #1b1a1a;
   box-shadow: none;
 }
 
@@ -220,6 +220,7 @@
 .site-footer__actions .button,
 .site-footer__menu-link {
   position: relative;
+  border-radius: 0;
   --interactive-underline-inset: 16px;
   --interactive-underline-offset: 10px;
 }
@@ -277,16 +278,22 @@
 
 .site-footer__actions .button--footer:hover,
 .site-footer__actions .button--footer:focus-visible {
-  background: var(--color-paper);
+  background: #1b1a1a;
   box-shadow: none;
+}
+
+.site-footer__actions .button--ghost {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: #1b1a1a;
+  color: var(--color-paper);
 }
 
 .site-footer__actions .button--ghost:hover,
 .site-footer__actions .button--ghost:focus-visible,
 .site-footer__menu-link:hover,
 .site-footer__menu-link:focus-visible {
-  border-color: rgba(0, 0, 0, 0.14);
-  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(255, 255, 255, 0.16);
+  background: #1b1a1a;
   box-shadow: none;
 }
 
@@ -1004,8 +1011,8 @@
   min-height: 38px;
   padding: 0 14px;
   border: none;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  background: #1b1a1a;
   color: var(--color-paper);
   transition:
     transform 180ms ease,
@@ -1015,7 +1022,7 @@
 
 .site-footer__menu-link:hover,
 .site-footer__menu-link:focus-visible {
-  background: rgba(255, 255, 255, 0.14);
+  background: #1b1a1a;
 }
 
 .site-footer__subscribe h2 {
