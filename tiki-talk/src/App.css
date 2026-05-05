@@ -13,6 +13,17 @@
   left: 0;
   right: 0;
   z-index: 1000;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    visibility 180ms ease;
+}
+
+.site-header--hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-16px);
 }
 
 .site-header__inner {
@@ -202,6 +213,80 @@
 .button--outline-light:focus-visible {
   border-color: rgba(255, 255, 255, 0.34);
   background: rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+}
+
+.club-shell__actions .button,
+.site-footer__actions .button,
+.site-footer__menu-link {
+  position: relative;
+  --interactive-underline-inset: 16px;
+  --interactive-underline-offset: 10px;
+}
+
+.site-footer__menu-link {
+  --interactive-underline-inset: 14px;
+  --interactive-underline-offset: 8px;
+}
+
+.club-shell__actions .button::after,
+.site-footer__actions .button::after,
+.site-footer__menu-link::after {
+  content: '';
+  position: absolute;
+  right: var(--interactive-underline-inset);
+  bottom: var(--interactive-underline-offset);
+  left: var(--interactive-underline-inset);
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease;
+}
+
+.club-shell__actions .button:hover,
+.club-shell__actions .button:focus-visible,
+.site-footer__actions .button:hover,
+.site-footer__actions .button:focus-visible,
+.site-footer__menu-link:hover,
+.site-footer__menu-link:focus-visible {
+  transform: none;
+}
+
+.club-shell__actions .button:hover::after,
+.club-shell__actions .button:focus-visible::after,
+.site-footer__actions .button:hover::after,
+.site-footer__actions .button:focus-visible::after,
+.site-footer__menu-link:hover::after,
+.site-footer__menu-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.club-shell__actions .button--light:hover,
+.club-shell__actions .button--light:focus-visible {
+  background: var(--color-paper);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.18);
+}
+
+.club-shell__actions .button--outline-light:hover,
+.club-shell__actions .button--outline-light:focus-visible {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+.site-footer__actions .button--footer:hover,
+.site-footer__actions .button--footer:focus-visible {
+  background: var(--color-paper);
+  box-shadow: none;
+}
+
+.site-footer__actions .button--ghost:hover,
+.site-footer__actions .button--ghost:focus-visible,
+.site-footer__menu-link:hover,
+.site-footer__menu-link:focus-visible {
+  border-color: rgba(0, 0, 0, 0.14);
+  background: rgba(255, 255, 255, 0.72);
   box-shadow: none;
 }
 
@@ -860,37 +945,31 @@
 .site-footer {
   position: relative;
   padding: 28px 0 22px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.92));
-  color: var(--color-ink);
+  background: #1b1a1a;
+  color: var(--color-paper);
 }
 
 .site-footer__panel {
   display: grid;
   grid-template-columns:
-    minmax(220px, 0.92fr)
     minmax(160px, 0.68fr)
     minmax(320px, 1.2fr)
     minmax(180px, 0.8fr);
-  grid-template-areas: 'art menu subscribe social';
+  grid-template-areas: 'menu subscribe social';
   gap: 14px;
   padding: 22px;
-  border: 1px solid var(--color-line);
-  border-radius: 32px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.92));
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.08);
+  border: none;
+  border-radius: 0;
+  background: #1b1a1a;
+  box-shadow: none;
 }
 
-.site-footer__art,
 .site-footer__menu,
 .site-footer__subscribe,
 .site-footer__social {
   display: grid;
   align-content: start;
   gap: 10px;
-}
-
-.site-footer__art {
-  grid-area: art;
 }
 
 .site-footer__menu {
@@ -905,29 +984,12 @@
   grid-area: social;
 }
 
-.site-footer__art-card {
-  display: grid;
-  place-items: center;
-  min-height: 100%;
-  padding: clamp(16px, 1.8vw, 22px);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 26px;
-  background:
-    radial-gradient(circle at top left, rgba(0, 0, 0, 0.06), transparent 34%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(255, 255, 255, 0.92));
-}
-
-.site-footer__art-image {
-  width: min(100%, 260px);
-  object-fit: contain;
-}
-
 .site-footer__label {
   margin: 0;
   font-size: 0.78rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-brand-soft);
+  color: rgba(255, 255, 255, 0.62);
 }
 
 .site-footer__menu-links {
@@ -941,10 +1003,10 @@
   width: fit-content;
   min-height: 38px;
   padding: 0 14px;
-  border: 1px solid rgba(0, 0, 0, 0.14);
+  border: none;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-  color: var(--color-ink);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-paper);
   transition:
     transform 180ms ease,
     background-color 180ms ease,
@@ -953,9 +1015,7 @@
 
 .site-footer__menu-link:hover,
 .site-footer__menu-link:focus-visible {
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.9);
-  border-color: rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .site-footer__subscribe h2 {
@@ -963,14 +1023,14 @@
   max-width: 13ch;
   font-size: clamp(1.72rem, 2.5vw, 2.5rem);
   line-height: 0.96;
-  color: var(--color-ink);
+  color: var(--color-paper);
 }
 
 .site-footer__subscribe-copy,
 .site-footer__social-copy {
   font-size: 0.95rem;
   line-height: 1.45;
-  color: var(--color-ink-soft);
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .site-footer__actions {
@@ -996,10 +1056,10 @@
   justify-content: center;
   width: 42px;
   aspect-ratio: 1;
-  border: 1px solid rgba(0, 0, 0, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-  color: var(--color-ink);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-paper);
   transition:
     transform 180ms ease,
     background-color 180ms ease,
@@ -1009,8 +1069,8 @@
 .site-footer__social-link:hover,
 .site-footer__social-link:focus-visible {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.9);
-  border-color: rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
 .site-footer__social-link svg {
@@ -1085,9 +1145,8 @@
   .site-footer__panel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
-      'art menu'
-      'subscribe subscribe'
-      'social social';
+      'menu social'
+      'subscribe subscribe';
     gap: 16px;
   }
 
@@ -1224,7 +1283,6 @@
   .site-footer__panel {
     grid-template-columns: 1fr;
     grid-template-areas:
-      'art'
       'menu'
       'subscribe'
       'social';

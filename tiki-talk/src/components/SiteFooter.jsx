@@ -1,10 +1,7 @@
-import joinUsImage from '../imgs/Join us.png'
-
 const FOOTER_LINKS = [
   { label: 'Home', href: '#home' },
   { label: 'About', href: '#about' },
   { label: 'Newsletter', href: '#newsletter' },
-  { label: 'Club', href: '#club' },
 ]
 
 const SOCIAL_LINKS = [
@@ -57,12 +54,6 @@ function SiteFooter() {
     <footer className="site-footer" id="join-us">
       <div className="site-frame">
         <div className="site-footer__panel">
-          <div className="site-footer__art">
-            <div className="site-footer__art-card">
-              <img className="site-footer__art-image" src={joinUsImage} alt="Join our club" />
-            </div>
-          </div>
-
           <nav className="site-footer__menu" aria-label="Footer">
             <p className="site-footer__label">Menu</p>
             <div className="site-footer__menu-links">

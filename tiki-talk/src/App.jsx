@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import './App.css'
 import SiteFooter from './components/SiteFooter'
 import TacticalHero from './components/TacticalHero'
@@ -27,16 +28,38 @@ const CLUB_HIGHLIGHTS = [
 ]
 
 function App() {
+  const [isFooterVisible, setIsFooterVisible] = useState(false)
+
+  useEffect(() => {
+    const footerPanel = document.querySelector('.site-footer__panel')
+
+    if (!footerPanel || typeof IntersectionObserver === 'undefined') {
+      return undefined
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsFooterVisible(entry.isIntersecting)
+      },
+      {
+        threshold: 0.05,
+      },
+    )
+
+    observer.observe(footerPanel)
+
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <div className="site-shell">
-      <header className="site-header">
+      <header className={`site-header${isFooterVisible ? ' site-header--hidden' : ''}`}>
         <div className="site-frame site-header__inner">
           <div className="site-nav-island">
             <nav className="site-nav" aria-label="Primary">
               <a href="#home">Home</a>
               <a href="#about">About</a>
               <a href="#newsletter">Newsletter</a>
-              <a href="#club">Club</a>
             </nav>
 
             <a className="button button--primary site-nav-island__cta" href="#club">
@@ -52,7 +75,7 @@ function App() {
         <section className="section section--podcast-intro" id="about">
           <div className="site-frame section__inner">
             <div className="podcast-intro">
-              <p className="eyebrow">About The Podcast</p>
+              <p className="eyebrow">About Tiki Taka Tiki Talk</p>
               <h2>Football conversation built around the way the game moves.</h2>
               <p className="podcast-intro__lede">
                 Tiki Taki Tiki Talk is a football podcast about tactics, rhythm,
