@@ -199,10 +199,10 @@ function App() {
         <section className="section section--podcast-intro" id="about">
           <div className="site-frame section__inner">
             <div className="podcast-intro">
-              <p className="eyebrow">About Tiki Taka Tiki Talk</p>
+              <p className="eyebrow">About Tiki-Taka Tiki-Talk</p>
               <h2>Football conversation built around the way the game moves.</h2>
               <p className="podcast-intro__lede">
-                Tiki Taki Tiki Talk is a football podcast about tactics, rhythm,
+                Tiki-Taka Tiki-Talk is a football podcast about tactics, rhythm,
                 and the small decisions that change a match. We break down the
                 ideas behind the game in a way that stays sharp, simple, and fun
                 to follow.
@@ -218,7 +218,7 @@ function App() {
                 <article className="origin-note">
                   <h3>Why we chose the name</h3>
                   <p>
-                    We chose &quot;Tiki Taka Tiki Talk&quot; because the title sounds
+                    We chose &quot;Tiki-Taka Tiki-Talk&quot; because the title sounds
                     like the game we love: quick, connected, and full of rhythm.
                     It turns a famous football idea into conversation, which fits a
                     podcast built on sharp passing of ideas between hosts and
