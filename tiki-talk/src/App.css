@@ -25,10 +25,10 @@
   display: grid;
   place-items: center;
   align-self: stretch;
-  padding: 0 18px;
+  padding: 0 24px;
   background: #ffffff;
   color: #11100f;
-  font-size: 0.82rem;
+  font-size: 0.96rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -74,9 +74,9 @@
   display: inline-flex;
   align-items: center;
   min-height: var(--ticker-height);
-  padding: 0 30px;
+  padding: 0 38px;
   white-space: nowrap;
-  font-size: 1.04rem;
+  font-size: 1.24rem;
   font-weight: 600;
   letter-spacing: -0.01em;
 }
@@ -491,6 +491,26 @@
   margin: 0 0 20px auto;
   font-size: clamp(4rem, 7vw, 7rem);
   line-height: 0.94;
+}
+
+.hero__title-word--tiki-first {
+  color: #3A499E;
+}
+
+.hero__title-dash {
+  color: #ffffff;
+}
+
+.hero__title-word--taka {
+  color: #42A548;
+}
+
+.hero__title-word--tiki-second {
+  color: #E96D29;
+}
+
+.hero__title-word--talk {
+  color: #F5D72B;
 }
 
 .hero__lede {
@@ -1329,7 +1349,7 @@
   :root {
     --nav-top-offset: 12px;
     --nav-scroll-offset: 104px;
-    --ticker-height: 50px;
+    --ticker-height: 60px;
   }
 
   .site-frame {
@@ -1375,18 +1395,18 @@
 @media (max-width: 560px) {
   :root {
     --nav-scroll-offset: 108px;
-    --ticker-height: 46px;
+    --ticker-height: 54px;
   }
 
   .sports-ticker__label {
-    padding: 0 14px;
-    font-size: 0.7rem;
+    padding: 0 16px;
+    font-size: 0.78rem;
     letter-spacing: 0.14em;
   }
 
   .sports-ticker__item {
-    padding: 0 22px;
-    font-size: 0.92rem;
+    padding: 0 28px;
+    font-size: 1.05rem;
   }
 
   .site-nav-island__cta {
