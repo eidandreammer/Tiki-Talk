@@ -3,9 +3,29 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 const API_HOST = 'https://v3.football.api-sports.io'
 const API_KEY = import.meta.env.VITE_APISPORTS_KEY ?? 'a95a84eeeac7bcec6f257d75f2b22239'
 const CACHE_TTL_MS = 30 * 60 * 1000
+const CACHE_NAMESPACE = 'selected-leagues-v1'
 const TICKER_TIME_ZONE = 'America/New_York'
 const TICKER_PIXELS_PER_SECOND = 46
 const MIN_TICKER_DURATION_SECONDS = 36
+const TICKER_LEAGUE_IDS = new Set([
+  39, // Premier League
+  140, // La Liga
+  78, // Bundesliga
+  135, // Serie A
+  61, // Ligue 1
+  128, // Argentine Primera Division
+  71, // Campeonato Brasileiro Serie A
+  2, // UEFA Champions League
+  3, // UEFA Europa League
+  848, // UEFA Conference League
+  13, // CONMEBOL Libertadores
+  11, // CONMEBOL Sudamericana
+  17, // AFC Champions League
+  1, // FIFA World Cup
+  9, // Copa America
+  4, // European Championship
+  480, // Olympic Football Tournament
+])
 
 function getTodayKey() {
   const parts = new Intl.DateTimeFormat('en-US', {
@@ -68,6 +88,7 @@ function normalizeFixture(match) {
       },
     },
     league: {
+      id: match.league.id,
       name: match.league.name,
     },
     teams: {
@@ -135,6 +156,10 @@ function hasApiErrors(errors) {
   return Boolean(errors)
 }
 
+function isTickerLeague(match) {
+  return TICKER_LEAGUE_IDS.has(match.league?.id)
+}
+
 function SportsTicker() {
   const trackRef = useRef(null)
   const [tickerItems, setTickerItems] = useState([])
@@ -143,7 +168,7 @@ function SportsTicker() {
   useEffect(() => {
     const controller = new AbortController()
     const dateKey = getTodayKey()
-    const cacheKey = `tiki-talk-fixtures-${dateKey}`
+    const cacheKey = `tiki-talk-fixtures-${CACHE_NAMESPACE}-${dateKey}`
 
     async function loadFixtures() {
       const cachedFixtures = readCachedFixtures(cacheKey)
@@ -178,7 +203,7 @@ function SportsTicker() {
         }
 
         const fixtures = Array.isArray(data.response)
-          ? data.response.map(normalizeFixture)
+          ? data.response.filter(isTickerLeague).map(normalizeFixture)
           : []
 
         writeCachedFixtures(cacheKey, fixtures)
@@ -231,7 +256,7 @@ function SportsTicker() {
 
   const fallbackText = {
     loading: "Loading today's football matchups...",
-    empty: 'No football matchups found for today.',
+    empty: 'No selected football matchups found for today.',
     error: 'Match ticker unavailable right now.',
   }[status]
   const displayItems = tickerItems.length ? tickerItems : [fallbackText]

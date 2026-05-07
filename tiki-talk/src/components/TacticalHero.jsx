@@ -14,7 +14,7 @@ function TacticalHero() {
           <div className="hero__copy">
             <h1>Tiki-Taka <br /> Tiki-Talk <br /> Goes beyond the pitch.</h1>
             <p className="hero__lede">
-              A podcast about football ideas, match rhythm, and the tactical details
+              Football debates, tactical insights, and the culture surrounding the game.
               that shape every result.
             </p>
           </div>

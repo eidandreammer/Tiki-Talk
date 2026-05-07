@@ -6,38 +6,6 @@ const FOOTER_LINKS = [
 
 const SOCIAL_LINKS = [
   {
-    label: 'Instagram',
-    href: 'https://www.instagram.com/',
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24">
-        <rect x="3.25" y="3.25" width="17.5" height="17.5" rx="5" />
-        <circle cx="12" cy="12" r="4.15" />
-        <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none" />
-      </svg>
-    ),
-  },
-  {
-    label: 'TikTok',
-    href: 'https://www.tiktok.com/',
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24">
-        <path d="M14.15 4.25c.62 1.64 1.94 3.03 3.53 3.71a6.6 6.6 0 0 0 2.07.5" />
-        <path d="M14.15 7.4v7.56a4.8 4.8 0 1 1-4.8-4.8" />
-        <path d="M14.15 4.25v10.71" />
-      </svg>
-    ),
-  },
-  {
-    label: 'X',
-    href: 'https://x.com/',
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24">
-        <path d="M4.5 4.5 19.5 19.5" />
-        <path d="M19.5 4.5 4.5 19.5" />
-      </svg>
-    ),
-  },
-  {
     label: 'YouTube',
     href: 'https://www.youtube.com/',
     icon: (
