@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-const API_HOST = 'https://v3.football.api-sports.io'
+const API_HOST = 'https://v3.Fútbol.api-sports.io'
 const API_KEY = import.meta.env.VITE_APISPORTS_KEY ?? 'a95a84eeeac7bcec6f257d75f2b22239'
 const CACHE_TTL_MS = 30 * 60 * 1000
 const CACHE_NAMESPACE = 'selected-leagues-v1'
@@ -24,7 +24,7 @@ const TICKER_LEAGUE_IDS = new Set([
   1, // FIFA World Cup
   9, // Copa America
   4, // European Championship
-  480, // Olympic Football Tournament
+  480, // Olympic Fútbol Tournament
 ])
 
 function getTodayKey() {
@@ -257,15 +257,15 @@ function SportsTicker() {
   }, [tickerItems, status])
 
   const fallbackText = {
-    loading: "Loading today's football matchups...",
-    empty: 'No selected football matchups found for today.',
+    loading: "Loading today's Fútbol matchups...",
+    empty: 'No selected Fútbol matchups found for today.',
     error: 'Match ticker unavailable right now.',
   }[status]
   const displayItems = tickerItems.length ? tickerItems : [fallbackText]
   const repeatedItems = [...displayItems, ...displayItems]
 
   return (
-    <aside className="sports-ticker" aria-label="Today football matchups">
+    <aside className="sports-ticker" aria-label="Today Fútbol matchups">
       <div className="sports-ticker__label">Today</div>
       <div className="sports-ticker__viewport">
         <div className="sports-ticker__track" ref={trackRef}>

@@ -20,7 +20,7 @@ const CLUB_PERKS = [
 const CLUB_HIGHLIGHTS = [
   {
     title: 'Exclusive',
-    copy: 'Members-only breakdowns, bonus drops, and extra football conversation.',
+    copy: 'Members-only breakdowns, bonus drops, and extra fútbol conversation.',
   },
   {
     title: 'Early Access',
@@ -203,9 +203,9 @@ function App() {
           <div className="site-frame section__inner">
             <div className="podcast-intro">
               <p className="eyebrow">About Tiki-Taka Tiki-Talk</p>
-              <h2>Football conversation built around the way the game moves.</h2>
+              <h2>Soccer conversations built around the way the game moves.</h2>
               <p className="podcast-intro__lede">
-                Tiki-Taka Tiki-Talk is a football podcast about tactics, rhythm,
+                Tiki-Taka Tiki-Talk is a fútbol podcast about tactics, rhythm,
                 and the small decisions that change a match. We break down the
                 ideas behind the game in a way that stays sharp, simple, and fun
                 to follow.
@@ -223,7 +223,7 @@ function App() {
                   <p>
                     We chose &quot;Tiki-Taka Tiki-Talk&quot; because the title sounds
                     like the game we love: quick, connected, and full of rhythm.
-                    It turns a famous football idea into conversation, which fits a
+                    It turns a famous fútbol idea into conversation, which fits a
                     podcast built on sharp passing of ideas between hosts and
                     listeners.
                   </p>
@@ -232,7 +232,7 @@ function App() {
                 <article className="origin-note">
                   <h3>What tiki-taka means</h3>
                   <p>
-                    Tiki-taka is a football strategy based on short passing,
+                    Tiki-taka is a fútbol strategy based on short passing,
                     constant movement, close support, and patient possession. The
                     goal is to control space and tempo by keeping the ball moving,
                     creating triangles, and pulling opponents out of shape before
@@ -244,7 +244,7 @@ function App() {
           </div>
         </section>
 
-       
+
 
         <section className="section section--newsletter" id="newsletter">
           <div className="site-frame">

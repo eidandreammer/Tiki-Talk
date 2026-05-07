@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
 import heroBackground from '../assets/Tiki Taka Hero Section Background.png'
+import heroVideo from '../assets/The_ball_should_start_rolling.mov'
 
-const VIDEO_URL = 'https://videos.pexels.com/video-files/3196220/3196220-uhd_2560_1440_25fps.mp4' // High-quality placeholder video
+const VIDEO_URL = heroVideo
 
 function TacticalHero() {
   const videoRef = useRef(null)
@@ -110,10 +111,10 @@ function TacticalHero() {
               <span ref={addToRefs} className="hero__title-dash hero__title-dash--second">-</span>
               <span ref={addToRefs} className="hero__title-word hero__title-word--talk">Talk</span>
               <br />
-              <span style={{ color: '#DA292A' }}>Goes beyond the pitch.</span>
+              <span style={{ color: '#b11f1f' }}>Goes beyond the pitch.</span>
             </h1>
             <p className="hero__lede">
-              Futbol debates, tactical insights, and the cultures that surround the game.
+              Fútbol debates, tactical insights, and the cultures that surround the game.
 
             </p>
           </div>

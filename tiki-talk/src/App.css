@@ -543,7 +543,7 @@
 .hero__lede {
   max-width: 34rem;
   margin: 0;
-  font-size: clamp(1.2rem, 1.1rem + 0.6vw, 1.55rem);
+  font-size: 32px;
   font-weight: 700;
   color: #fff;
 }
