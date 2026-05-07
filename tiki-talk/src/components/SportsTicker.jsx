@@ -5,8 +5,8 @@ const API_KEY = import.meta.env.VITE_APISPORTS_KEY ?? 'a95a84eeeac7bcec6f257d75f
 const CACHE_TTL_MS = 30 * 60 * 1000
 const CACHE_NAMESPACE = 'selected-leagues-v1'
 const TICKER_TIME_ZONE = 'America/New_York'
-const TICKER_PIXELS_PER_SECOND = 46
-const MIN_TICKER_DURATION_SECONDS = 36
+const TICKER_PIXELS_PER_SECOND = 94.3
+const MIN_TICKER_DURATION_SECONDS = 17.4
 const TICKER_LEAGUE_IDS = new Set([
   39, // Premier League
   140, // La Liga
@@ -232,9 +232,11 @@ function SportsTicker() {
 
     const updateTickerDuration = () => {
       const scrollDistance = track.scrollWidth / 2
+      // Speed varies slightly based on screen width (smaller width = slower)
+      const variableSpeed = TICKER_PIXELS_PER_SECOND + (window.innerWidth * 0.005)
       const duration = Math.max(
         MIN_TICKER_DURATION_SECONDS,
-        scrollDistance / TICKER_PIXELS_PER_SECOND,
+        scrollDistance / variableSpeed,
       )
 
       track.style.setProperty('--ticker-duration', `${duration}s`)
