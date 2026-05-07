@@ -2,6 +2,112 @@
   width: 100%;
 }
 
+.sports-ticker {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1200;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  min-height: var(--ticker-height);
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: #11100f;
+  color: var(--color-paper);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.sports-ticker__label {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  padding: 0 18px;
+  background: #ffffff;
+  color: #11100f;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.sports-ticker__viewport {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.sports-ticker__viewport::before,
+.sports-ticker__viewport::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 64px;
+  pointer-events: none;
+}
+
+.sports-ticker__viewport::before {
+  left: 0;
+  background: linear-gradient(90deg, #11100f, transparent);
+}
+
+.sports-ticker__viewport::after {
+  right: 0;
+  background: linear-gradient(270deg, #11100f, transparent);
+}
+
+.sports-ticker__track {
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  animation: ticker-scroll-left var(--ticker-duration, 48s) linear infinite;
+  will-change: transform;
+}
+
+.sports-ticker__item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--ticker-height);
+  padding: 0 24px;
+  white-space: nowrap;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.sports-ticker__item::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.48);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sports-ticker__track {
+    animation: none;
+    transform: none;
+  }
+}
+
+@keyframes ticker-scroll-left {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 .site-frame {
   width: min(1320px, calc(100% - 32px));
   margin: 0 auto;
@@ -9,7 +115,7 @@
 
 .site-header {
   position: fixed;
-  top: var(--nav-top-offset);
+  top: calc(var(--ticker-height) + var(--nav-top-offset));
   left: 0;
   right: 0;
   z-index: 1000;
@@ -334,7 +440,7 @@
   z-index: 1;
   display: grid;
   min-height: min(820px, calc(100svh - 24px));
-  padding: var(--nav-scroll-offset) 0 40px;
+  padding: calc(var(--ticker-height) + var(--nav-scroll-offset)) 0 40px;
 }
 
 .hero__content {
@@ -498,11 +604,11 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: url('/brand/tttt-logo-bw.png');
+  background-image: url("./assets/tttt-logo.png");
   background-position: right clamp(-136px, -8vw, -56px) center;
   background-repeat: no-repeat;
   background-size: clamp(440px, 46vw, 860px);
-  opacity: 0.15;
+  opacity: 1;
 }
 
 .section--origin {
@@ -1211,10 +1317,18 @@
   }
 }
 
+@media (max-width: 1050px) {
+  .section--podcast-intro::before {
+    background-image: url('/brand/tttt-logo-bw.png');
+    opacity: 0.15;
+  }
+}
+
 @media (max-width: 860px) {
   :root {
     --nav-top-offset: 12px;
     --nav-scroll-offset: 104px;
+    --ticker-height: 40px;
   }
 
   .site-frame {
@@ -1260,6 +1374,18 @@
 @media (max-width: 560px) {
   :root {
     --nav-scroll-offset: 108px;
+    --ticker-height: 38px;
+  }
+
+  .sports-ticker__label {
+    padding: 0 12px;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+  }
+
+  .sports-ticker__item {
+    padding: 0 18px;
+    font-size: 0.78rem;
   }
 
   .site-nav-island__cta {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import SiteFooter from './components/SiteFooter'
+import SportsTicker from './components/SportsTicker'
 import TacticalHero from './components/TacticalHero'
 import ginoImage from './imgs/Gino.png'
 
@@ -177,6 +178,8 @@ function App() {
 
   return (
     <div className="site-shell">
+      <SportsTicker />
+
       <header className={`site-header${isFooterVisible ? ' site-header--hidden' : ''}`}>
         <div className="site-frame site-header__inner">
           <div className="site-nav-island">
