@@ -31,7 +31,11 @@ function readCachedTicker(cacheKey, { allowExpired = false } = {}) {
 
     const cachedData = JSON.parse(cachedValue)
 
-    if (!Array.isArray(cachedData.items) || typeof cachedData.status !== 'string') {
+    if (
+      !Array.isArray(cachedData.items) ||
+      typeof cachedData.status !== 'string' ||
+      !Number.isFinite(cachedData.expiresAt)
+    ) {
       return null
     }
 
