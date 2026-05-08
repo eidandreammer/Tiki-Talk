@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "generate:ticker": "node scripts/writeStaticSoccerTicker.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },

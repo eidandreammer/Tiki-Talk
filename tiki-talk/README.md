@@ -40,6 +40,13 @@ If the API route is hosted on a different domain than the Vite app, set:
 VITE_SOCCER_TICKER_ENDPOINT=https://your-api-host.example.com/api/soccer-ticker
 ```
 
+The production site at `tikitalk.us` is deployed on GitHub Pages, which cannot
+run serverless functions from the `api/` folder. The Pages workflow runs
+`npm run generate:ticker` after the Vite build to create a static JSON response
+at `/api/soccer-ticker`, then refreshes the deployment hourly. Add the
+`APISPORTS_KEY` repository secret in GitHub Actions so that step can fetch
+current fixtures without exposing the key to the browser bundle.
+
 ## n8n workflow
 
 Import [n8n/tiki-talk-google-sheets-capture.json](n8n/tiki-talk-google-sheets-capture.json) into n8n and then follow [docs/n8n-google-sheets-setup.md](docs/n8n-google-sheets-setup.md).
