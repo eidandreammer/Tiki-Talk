@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-const API_HOST = 'https://v3.Fútbol.api-sports.io'
-const API_KEY = import.meta.env.VITE_APISPORTS_KEY ?? 'a95a84eeeac7bcec6f257d75f2b22239'
+const API_HOST = 'https://v3.football.api-sports.io'
+const API_KEY =
+  import.meta.env.VITE_APISPORTS_KEY ?? 'a95a84eeeac7bcec6f257d75f2b22239'
 const CACHE_TTL_MS = 30 * 60 * 1000
 const CACHE_NAMESPACE = 'selected-leagues-v1'
 const TICKER_TIME_ZONE = 'America/New_York'
@@ -160,6 +161,10 @@ function isTickerLeague(match) {
   return TICKER_LEAGUE_IDS.has(match.league?.id)
 }
 
+function hasApiKey() {
+  return typeof API_KEY === 'string' && API_KEY.trim().length > 0
+}
+
 function SportsTicker() {
   const trackRef = useRef(null)
   const [tickerItems, setTickerItems] = useState([])
@@ -169,13 +174,13 @@ function SportsTicker() {
     const controller = new AbortController()
     const dateKey = getTodayKey()
     const cacheKey = `tiki-talk-fixtures-${CACHE_NAMESPACE}-${dateKey}`
+    let idleCallbackId
+    let fallbackTimerId
+    let cachedStateTimerId
 
-    async function loadFixtures() {
-      const cachedFixtures = readCachedFixtures(cacheKey)
-
-      if (cachedFixtures) {
-        setTickerItems(cachedFixtures.map(formatFixture))
-        setStatus(cachedFixtures.length ? 'ready' : 'empty')
+    async function fetchFixtures() {
+      if (!hasApiKey()) {
+        setStatus('error')
         return
       }
 
@@ -218,9 +223,25 @@ function SportsTicker() {
       }
     }
 
-    loadFixtures()
+    const cachedFixtures = readCachedFixtures(cacheKey)
 
-    return () => controller.abort()
+    if (cachedFixtures) {
+      cachedStateTimerId = window.setTimeout(() => {
+        setTickerItems(cachedFixtures.map(formatFixture))
+        setStatus(cachedFixtures.length ? 'ready' : 'empty')
+      }, 0)
+    } else if ('requestIdleCallback' in window) {
+      idleCallbackId = window.requestIdleCallback(fetchFixtures, { timeout: 3000 })
+    } else {
+      fallbackTimerId = window.setTimeout(fetchFixtures, 1200)
+    }
+
+    return () => {
+      controller.abort()
+      if (idleCallbackId) window.cancelIdleCallback(idleCallbackId)
+      if (fallbackTimerId) window.clearTimeout(fallbackTimerId)
+      if (cachedStateTimerId) window.clearTimeout(cachedStateTimerId)
+    }
   }, [])
 
   useLayoutEffect(() => {

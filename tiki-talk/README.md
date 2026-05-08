@@ -17,6 +17,12 @@ VITE_N8N_NEWSLETTER_WEBHOOK_URL=https://your-n8n-host/webhook/tiki-talk/newslett
 VITE_N8N_CLUB_WEBHOOK_URL=https://your-n8n-host/webhook/tiki-talk/club
 ```
 
+To power the live match ticker, also set your API-Sports football key:
+
+```env
+VITE_APISPORTS_KEY=your-api-sports-key
+```
+
 ## n8n workflow
 
 Import [n8n/tiki-talk-google-sheets-capture.json](n8n/tiki-talk-google-sheets-capture.json) into n8n and then follow [docs/n8n-google-sheets-setup.md](docs/n8n-google-sheets-setup.md).
