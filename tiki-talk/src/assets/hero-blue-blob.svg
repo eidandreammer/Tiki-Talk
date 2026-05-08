@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" fill="none">
+  <defs>
+    <linearGradient id="blobBase" x1="10" y1="195" x2="858" y2="147" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0A52BA" stop-opacity="0"/>
+      <stop offset="0.12" stop-color="#095BCC" stop-opacity="0.82"/>
+      <stop offset="0.48" stop-color="#1A7FE6" stop-opacity="0.92"/>
+      <stop offset="0.84" stop-color="#0444AA" stop-opacity="0.78"/>
+      <stop offset="1" stop-color="#0444AA" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="stripeGlow" x1="38" y1="202" x2="813" y2="202" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1167D0" stop-opacity="0"/>
+      <stop offset="0.18" stop-color="#2A90EF" stop-opacity="0.58"/>
+      <stop offset="0.72" stop-color="#094BB7" stop-opacity="0.66"/>
+      <stop offset="1" stop-color="#094BB7" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="whiteLift" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(141 92) rotate(17) scale(155 83)">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.26"/>
+      <stop offset="0.44" stop-color="#fff" stop-opacity="0.26"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="deepSpot" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(686 311) rotate(16) scale(177 105)">
+      <stop offset="0" stop-color="#004FB2" stop-opacity="0.46"/>
+      <stop offset="0.45" stop-color="#004FB2" stop-opacity="0.46"/>
+      <stop offset="1" stop-color="#004FB2" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="baseShape">
+      <path d="M26.4 88.2L140.8 42L290.4 58.8L422.4 21L589.6 50.4L739.2 29.4L853.6 75.6L818.4 176.4L880 252L774.4 348.6L616 323.4L466.4 386.4L308 344.4L140.8 378L8.8 306.6L61.6 210Z"/>
+    </clipPath>
+    <clipPath id="stripeShape">
+      <path d="M54 137L174 80L294 116L446 62L582 98L734 58L854 134L806 257L854 349L702 384L582 344L438 408L286 354L142 394L78 293Z"/>
+    </clipPath>
+    <pattern id="stripes" width="52" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(84)">
+      <rect width="52" height="2" fill="#fff" fill-opacity="0.18"/>
+    </pattern>
+  </defs>
+  <g clip-path="url(#baseShape)" opacity="0.84">
+    <rect width="880" height="420" fill="url(#blobBase)"/>
+    <rect width="880" height="420" fill="url(#whiteLift)"/>
+    <rect width="880" height="420" fill="url(#deepSpot)"/>
+  </g>
+  <g clip-path="url(#stripeShape)" opacity="0.72">
+    <rect x="38" y="58" width="816" height="350" fill="url(#stripeGlow)"/>
+    <rect x="38" y="58" width="816" height="350" fill="url(#stripes)"/>
+  </g>
+</svg>

@@ -3,9 +3,7 @@ import './App.css'
 import SiteFooter from './components/SiteFooter'
 import SportsTicker from './components/SportsTicker'
 import TacticalHero from './components/TacticalHero'
-import ginoImage360Avif from './imgs/gino-360.avif'
-import ginoImage520Avif from './imgs/gino-520.avif'
-import ginoImage520Jpg from './imgs/gino-520.jpg'
+import gianniWebsiteImage from './assets/Gianni Website.png'
 
 const NEWSLETTER_BENEFITS = [
   'Notifications about new episodes, clips, and fresh content drops',
@@ -207,10 +205,7 @@ function App() {
               <p className="eyebrow">About Tiki-Taka Tiki-Talk</p>
               <h2>Soccer conversations built around the way the game moves.</h2>
               <p className="podcast-intro__lede">
-                Tiki-Taka Tiki-Talk is a fútbol podcast about tactics, rhythm,
-                and the small decisions that change a match. We break down the
-                ideas behind the game in a way that stays sharp, simple, and fun
-                to follow.
+                A football podcast built on fun debates, live match reactions, football games, and the chaos of the sport we all obsess over.
               </p>
             </div>
           </div>
@@ -252,23 +247,16 @@ function App() {
           <div className="site-frame">
             <div className="newsletter-feature">
               <div className="newsletter-feature__media">
-                <picture>
-                  <source
-                    type="image/avif"
-                    srcSet={`${ginoImage360Avif} 360w, ${ginoImage520Avif} 520w`}
-                    sizes="(max-width: 860px) 82vw, 425px"
-                  />
-                  <img
-                    className="newsletter-feature__image"
-                    src={ginoImage520Jpg}
-                    width="425"
-                    height="520"
-                    alt="Gino standing in a suit"
-                    loading="lazy"
-                    decoding="async"
-                    fetchPriority="low"
-                  />
-                </picture>
+                <img
+                  className="newsletter-feature__image"
+                  src={gianniWebsiteImage}
+                  width="425"
+                  height="520"
+                  alt="Gianni wearing an Argentina jersey"
+                  loading="lazy"
+                  decoding="async"
+                  fetchPriority="low"
+                />
               </div>
 
               <div className="newsletter-feature__content">

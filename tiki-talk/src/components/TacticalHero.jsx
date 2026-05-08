@@ -151,7 +151,7 @@ function TacticalHero() {
             srcSet={`${heroPoster1280Jpg} 1280w, ${heroPoster1920Jpg} 1920w`}
             sizes="100vw"
             width="1280"
-            height="714"
+            height="720"
             alt=""
             fetchPriority="high"
             loading="eager"
@@ -188,7 +188,7 @@ function TacticalHero() {
               <span style={{ color: '#b11f1f' }}>Go beyond the pitch.</span>
             </h1>
             <p className="hero__lede">
-              Fútbol debates, tactical insights, and the cultures that surround the game.
+              The podcast that debates Fútbol, tactical insights, and the cultures that surround the game.
 
             </p>
           </div>
