@@ -17,10 +17,27 @@ VITE_N8N_NEWSLETTER_WEBHOOK_URL=https://your-n8n-host/webhook/tiki-talk/newslett
 VITE_N8N_CLUB_WEBHOOK_URL=https://your-n8n-host/webhook/tiki-talk/club
 ```
 
-To power the live match ticker, also set your API-Sports football key:
+To power the live match ticker, set your API-Sports football key as a server-side
+variable. Do not prefix this value with `VITE_`, because Vite exposes those
+values to the browser bundle:
 
 ```env
-VITE_APISPORTS_KEY=your-api-sports-key
+APISPORTS_KEY=your-api-sports-key
+```
+
+The React app calls `/api/soccer-ticker`, which is backed by a cached proxy in
+[api/soccer-ticker.js](api/soccer-ticker.js). The proxy keeps API-Sports calls
+server-side, sets CDN cache headers, and returns a client cache duration based on
+match state:
+
+- live matches: short cache, around 1 minute in the browser
+- upcoming matches: 30-minute cache
+- finished or empty ticker: cache longer, up to the next day
+
+If the API route is hosted on a different domain than the Vite app, set:
+
+```env
+VITE_SOCCER_TICKER_ENDPOINT=https://your-api-host.example.com/api/soccer-ticker
 ```
 
 ## n8n workflow

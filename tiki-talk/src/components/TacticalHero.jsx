@@ -1,122 +1,130 @@
 import { useEffect, useRef, useState } from 'react'
-import heroPosterSmall from '../assets/tiki-hero-poster-768.avif'
-import heroPosterMedium from '../assets/tiki-hero-poster-1280.avif'
-import heroPosterLarge from '../assets/tiki-hero-poster-1920.avif'
-import heroPosterFallbackMedium from '../assets/tiki-hero-poster-1280.jpg'
-import heroPosterFallbackLarge from '../assets/tiki-hero-poster-1920.jpg'
-import heroVideoMobile from '../assets/tiki-hero-scroll-540.mp4'
-import heroVideoDesktop from '../assets/tiki-hero-scroll-720.mp4'
+import heroPoster768Avif from '../assets/tiki-hero-poster-768.avif'
+import heroPoster1280Avif from '../assets/tiki-hero-poster-1280.avif'
+import heroPoster1920Avif from '../assets/tiki-hero-poster-1920.avif'
+import heroPoster1280Jpg from '../assets/tiki-hero-poster-1280.jpg'
+import heroPoster1920Jpg from '../assets/tiki-hero-poster-1920.jpg'
+import heroVideo540 from '../assets/tiki-hero-scroll-540.mp4'
+import heroVideo720 from '../assets/tiki-hero-scroll-720.mp4'
 
-const HERO_POSTER_AVIF_SRCSET = `${heroPosterSmall} 768w, ${heroPosterMedium} 1280w, ${heroPosterLarge} 1920w`
-const HERO_POSTER_FALLBACK_SRCSET = `${heroPosterFallbackMedium} 1280w, ${heroPosterFallbackLarge} 1920w`
-const HERO_POSTER_SIZES = '100vw'
-const MAX_VIDEO_TIME = 8
+const HERO_VIDEO_DURATION_SECONDS = 8
+const SEEK_STEP_SECONDS = 1 / 30
 
 function TacticalHero() {
+  const heroRef = useRef(null)
   const videoRef = useRef(null)
   const titleRefs = useRef([])
-  const lastVideoTimeRef = useRef(0)
-  const [isVideoVisible, setIsVideoVisible] = useState(false)
+  const [isPosterLoaded, setIsPosterLoaded] = useState(false)
+  const [isVideoReady, setIsVideoReady] = useState(false)
+  const [videoSource, setVideoSource] = useState('')
 
   useEffect(() => {
-    let animationFrameId
-    let loadTimerId
-    let maxScroll = window.innerHeight * 1.5
-    let textScrollDistance = window.innerHeight * 0.8
-    let isTicking = false
-    const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const shouldSaveData = Boolean(navigator.connection?.saveData)
+    if (!isPosterLoaded) {
+      return undefined
+    }
 
-    const loadVideo = () => {
+    let idleCallbackId
+    let timeoutId
+    let isCancelled = false
+
+    const loadHeroVideo = () => {
+      if (isCancelled) {
+        return
+      }
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const shouldSaveData = Boolean(navigator.connection?.saveData)
+
+      if (prefersReducedMotion || shouldSaveData) {
+        return
+      }
+
+      const shouldUseSmallVideo = window.matchMedia('(max-width: 760px)').matches
+      setVideoSource(shouldUseSmallVideo ? heroVideo540 : heroVideo720)
+    }
+
+    if ('requestIdleCallback' in window) {
+      idleCallbackId = window.requestIdleCallback(loadHeroVideo, { timeout: 1200 })
+    } else {
+      timeoutId = window.setTimeout(loadHeroVideo, 350)
+    }
+
+    return () => {
+      isCancelled = true
+
+      if (idleCallbackId) {
+        window.cancelIdleCallback(idleCallbackId)
+      }
+
+      if (timeoutId) {
+        window.clearTimeout(timeoutId)
+      }
+    }
+  }, [isPosterLoaded])
+
+  useEffect(() => {
+    let animationFrameId = 0
+    let latestScrollY = window.scrollY
+
+    const updateHeroFromScroll = () => {
+      animationFrameId = 0
+      const hero = heroRef.current
       const video = videoRef.current
+      const viewportHeight = window.innerHeight || 1
+      const heroHeight = hero?.offsetHeight || viewportHeight
+      const maxScroll = Math.max(heroHeight, viewportHeight * 1.5)
+      const scrollProgress = Math.min(Math.max(latestScrollY / maxScroll, 0), 1)
+      const titleProgress = Math.min(latestScrollY / (viewportHeight * 0.8), 1)
 
-      if (!video || video.dataset.loaded || shouldReduceMotion || shouldSaveData) {
-        return
-      }
+      if (isVideoReady && video && Number.isFinite(video.duration) && video.duration > 0) {
+        const targetDuration = Math.min(HERO_VIDEO_DURATION_SECONDS, video.duration)
+        const targetTime = scrollProgress * targetDuration
+        const shouldSeek = Math.abs(video.currentTime - targetTime) >= SEEK_STEP_SECONDS
 
-      const isCompactViewport = window.matchMedia('(max-width: 760px)').matches
-      video.src = isCompactViewport ? heroVideoMobile : heroVideoDesktop
-      video.dataset.loaded = 'true'
-      video.load()
-    }
-
-    const updateMeasurements = () => {
-      maxScroll = window.innerHeight * 1.5
-      textScrollDistance = window.innerHeight * 0.8
-    }
-
-    const scheduleDeferredVideoLoad = () => {
-      if (!shouldReduceMotion && !shouldSaveData) {
-        loadTimerId = window.setTimeout(loadVideo, 2500)
-      }
-    }
-
-    const handleScroll = () => {
-      if (window.scrollY > 8) {
-        loadVideo()
-      }
-
-      if (isTicking) {
-        return
-      }
-
-      isTicking = true
-      animationFrameId = requestAnimationFrame(() => {
-        isTicking = false
-        const scrollY = window.scrollY
-
-        if (!shouldReduceMotion && videoRef.current && videoRef.current.readyState >= 2) {
-          const scrollProgress = Math.min(scrollY / maxScroll, 1)
-          const duration = Number.isFinite(videoRef.current.duration)
-            ? videoRef.current.duration
-            : MAX_VIDEO_TIME
-          const targetTime = Math.min(scrollProgress * MAX_VIDEO_TIME, duration)
-
-          if (
-            Number.isFinite(targetTime) &&
-            Math.abs(targetTime - lastVideoTimeRef.current) > 0.04
-          ) {
-            videoRef.current.currentTime = targetTime
-            lastVideoTimeRef.current = targetTime
-          }
+        if (shouldSeek) {
+          video.currentTime = targetTime
         }
+      }
 
-        titleRefs.current.forEach((el, index) => {
-          if (!el) return
+      titleRefs.current.forEach((el, index) => {
+        if (!el) return
 
-          const progress = Math.min(scrollY / textScrollDistance, 1)
-          const directionX = index % 2 === 0 ? -1 : 1
-          const directionY = index < 2 ? -1 : 1
-          const moveX = progress * 100 * directionX
-          const moveY = progress * 50 * directionY
-          const scale = 1 + progress * 0.5
-          const opacity = 1 - progress * 1.2
+        const directionX = index % 2 === 0 ? -1 : 1
+        const directionY = index < 2 ? -1 : 1
+        const moveX = titleProgress * 100 * directionX
+        const moveY = titleProgress * 50 * directionY
+        const scale = 1 + titleProgress * 0.5
+        const opacity = 1 - titleProgress * 1.2
 
-          el.style.transform = `translate(${moveX}px, ${moveY}px) scale(${scale})`
-          el.style.opacity = Math.max(opacity, 0).toString()
-        })
+        el.style.transform = `translate(${moveX}px, ${moveY}px) scale(${scale})`
+        el.style.opacity = Math.max(opacity, 0).toString()
       })
     }
 
-    if (document.readyState === 'complete') {
-      scheduleDeferredVideoLoad()
-    } else {
-      window.addEventListener('load', scheduleDeferredVideoLoad, { once: true })
+    const requestScrollUpdate = () => {
+      if (animationFrameId) {
+        return
+      }
+
+      animationFrameId = requestAnimationFrame(updateHeroFromScroll)
+    }
+
+    const handleScroll = () => {
+      latestScrollY = window.scrollY
+      requestScrollUpdate()
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
-    window.addEventListener('resize', updateMeasurements, { passive: true })
+    window.addEventListener('resize', handleScroll)
 
     handleScroll()
 
     return () => {
-      window.removeEventListener('load', scheduleDeferredVideoLoad)
       window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', updateMeasurements)
-      if (loadTimerId) window.clearTimeout(loadTimerId)
+      window.removeEventListener('resize', handleScroll)
       if (animationFrameId) cancelAnimationFrame(animationFrameId)
     }
-  }, [])
+  }, [isVideoReady])
 
   const addToRefs = (el) => {
     if (el && !titleRefs.current.includes(el)) {
@@ -125,34 +133,44 @@ function TacticalHero() {
   }
 
   return (
-    <section className="hero" id="home">
+    <section
+      ref={heroRef}
+      className="hero"
+      id="home"
+    >
       <div className="hero__media" aria-hidden="true">
         <picture className="hero__media-picture">
           <source
             type="image/avif"
-            srcSet={HERO_POSTER_AVIF_SRCSET}
-            sizes={HERO_POSTER_SIZES}
+            srcSet={`${heroPoster768Avif} 768w, ${heroPoster1280Avif} 1280w, ${heroPoster1920Avif} 1920w`}
+            sizes="100vw"
           />
           <img
             className="hero__media-image"
-            src={heroPosterFallbackLarge}
-            srcSet={HERO_POSTER_FALLBACK_SRCSET}
-            sizes={HERO_POSTER_SIZES}
+            src={heroPoster1280Jpg}
+            srcSet={`${heroPoster1280Jpg} 1280w, ${heroPoster1920Jpg} 1920w`}
+            sizes="100vw"
+            width="1280"
+            height="714"
             alt=""
-            width="1920"
-            height="1072"
             fetchPriority="high"
+            loading="eager"
             decoding="async"
+            onLoad={() => setIsPosterLoaded(true)}
           />
         </picture>
-        <video
-          ref={videoRef}
-          className={`hero__media-video${isVideoVisible ? ' hero__media-video--ready' : ''}`}
-          muted
-          playsInline
-          preload="none"
-          onLoadedData={() => setIsVideoVisible(true)}
-        />
+        {videoSource ? (
+          <video
+            ref={videoRef}
+            className={`hero__media-video${isVideoReady ? ' hero__media-video--ready' : ''}`}
+            src={videoSource}
+            muted
+            playsInline
+            preload="auto"
+            poster={heroPoster1280Jpg}
+            onLoadedData={() => setIsVideoReady(true)}
+          />
+        ) : null}
       </div>
 
       <div className="site-frame hero__layout">

@@ -3,9 +3,9 @@ import './App.css'
 import SiteFooter from './components/SiteFooter'
 import SportsTicker from './components/SportsTicker'
 import TacticalHero from './components/TacticalHero'
-import ginoAvifSmall from './imgs/gino-360.avif'
-import ginoAvifLarge from './imgs/gino-520.avif'
-import ginoImageFallback from './imgs/gino-520.jpg'
+import ginoImage360Avif from './imgs/gino-360.avif'
+import ginoImage520Avif from './imgs/gino-520.avif'
+import ginoImage520Jpg from './imgs/gino-520.jpg'
 
 const NEWSLETTER_BENEFITS = [
   'Notifications about new episodes, clips, and fresh content drops',
@@ -255,15 +255,15 @@ function App() {
                 <picture>
                   <source
                     type="image/avif"
-                    srcSet={`${ginoAvifSmall} 360w, ${ginoAvifLarge} 520w`}
-                    sizes="(max-width: 560px) 80vw, 420px"
+                    srcSet={`${ginoImage360Avif} 360w, ${ginoImage520Avif} 520w`}
+                    sizes="(max-width: 860px) 82vw, 425px"
                   />
                   <img
                     className="newsletter-feature__image"
-                    src={ginoImageFallback}
+                    src={ginoImage520Jpg}
+                    width="425"
+                    height="520"
                     alt="Gino standing in a suit"
-                    width="520"
-                    height="636"
                     loading="lazy"
                     decoding="async"
                     fetchPriority="low"

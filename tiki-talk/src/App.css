@@ -450,7 +450,7 @@
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity 240ms ease;
+  transition: opacity 180ms ease;
 }
 
 .hero__media-video--ready {

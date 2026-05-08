@@ -1,32 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-const API_HOST = 'https://v3.football.api-sports.io'
-const API_KEY =
-  import.meta.env.VITE_APISPORTS_KEY ?? 'a95a84eeeac7bcec6f257d75f2b22239'
-const CACHE_TTL_MS = 30 * 60 * 1000
-const CACHE_NAMESPACE = 'selected-leagues-v1'
+const SOCCER_TICKER_ENDPOINT =
+  import.meta.env.VITE_SOCCER_TICKER_ENDPOINT ?? '/api/soccer-ticker'
+const FALLBACK_CACHE_TTL_MS = 30 * 60 * 1000
+const CACHE_NAMESPACE = 'selected-leagues-v2'
 const TICKER_TIME_ZONE = 'America/New_York'
 const TICKER_PIXELS_PER_SECOND = 94.3
 const MIN_TICKER_DURATION_SECONDS = 17.4
-const TICKER_LEAGUE_IDS = new Set([
-  39, // Premier League
-  140, // La Liga
-  78, // Bundesliga
-  135, // Serie A
-  61, // Ligue 1
-  128, // Argentine Primera Division
-  71, // Campeonato Brasileiro Serie A
-  2, // UEFA Champions League
-  3, // UEFA Europa League
-  848, // UEFA Conference League
-  13, // CONMEBOL Libertadores
-  11, // CONMEBOL Sudamericana
-  17, // AFC Champions League
-  1, // FIFA World Cup
-  9, // Copa America
-  4, // European Championship
-  480, // Olympic Fútbol Tournament
-])
 
 function getTodayKey() {
   const parts = new Intl.DateTimeFormat('en-US', {
@@ -41,73 +21,7 @@ function getTodayKey() {
   return `${dateParts.year}-${dateParts.month}-${dateParts.day}`
 }
 
-function formatKickoff(isoDate) {
-  return new Intl.DateTimeFormat('en-US', {
-    timeZone: TICKER_TIME_ZONE,
-    hour: 'numeric',
-    minute: '2-digit',
-  }).format(new Date(isoDate))
-}
-
-function formatFixture(match) {
-  const status = match.fixture.status.short
-  const home = match.teams.home.name
-  const away = match.teams.away.name
-  const homeGoals = match.goals.home
-  const awayGoals = match.goals.away
-  const league = match.league.name
-  const hasScore = homeGoals !== null && awayGoals !== null
-  const score = hasScore ? `${homeGoals}-${awayGoals}` : 'vs'
-  const finishedStatuses = new Set(['FT', 'AET', 'PEN'])
-  const liveStatuses = new Set(['1H', 'HT', '2H', 'ET', 'BT', 'P'])
-
-  if (finishedStatuses.has(status)) {
-    return `${league}: ${home} ${score} ${away}`
-  }
-
-  if (liveStatuses.has(status)) {
-    const elapsed = match.fixture.status.elapsed ? `${match.fixture.status.elapsed}'` : 'Live'
-
-    return `${league}: ${home} ${score} ${away} | ${elapsed}`
-  }
-
-  if (status === 'NS' || status === 'TBD') {
-    return `${league}: ${formatKickoff(match.fixture.date)} | ${home} vs ${away}`
-  }
-
-  return `${league}: ${home} ${score} ${away} | ${match.fixture.status.long}`
-}
-
-function normalizeFixture(match) {
-  return {
-    fixture: {
-      date: match.fixture.date,
-      status: {
-        short: match.fixture.status.short,
-        long: match.fixture.status.long,
-        elapsed: match.fixture.status.elapsed,
-      },
-    },
-    league: {
-      id: match.league.id,
-      name: match.league.name,
-    },
-    teams: {
-      home: {
-        name: match.teams.home.name,
-      },
-      away: {
-        name: match.teams.away.name,
-      },
-    },
-    goals: {
-      home: match.goals.home,
-      away: match.goals.away,
-    },
-  }
-}
-
-function readCachedFixtures(cacheKey) {
+function readCachedTicker(cacheKey, { allowExpired = false } = {}) {
   try {
     const cachedValue = window.localStorage.getItem(cacheKey)
 
@@ -117,23 +31,33 @@ function readCachedFixtures(cacheKey) {
 
     const cachedData = JSON.parse(cachedValue)
 
-    if (Date.now() - cachedData.savedAt > CACHE_TTL_MS) {
+    if (!Array.isArray(cachedData.items) || typeof cachedData.status !== 'string') {
       return null
     }
 
-    return cachedData.fixtures
+    if (!allowExpired && Date.now() > cachedData.expiresAt) {
+      return null
+    }
+
+    return cachedData
   } catch {
     return null
   }
 }
 
-function writeCachedFixtures(cacheKey, fixtures) {
+function writeCachedTicker(cacheKey, tickerData) {
+  const ttlMs = Number.isFinite(tickerData.cache?.ttlMs)
+    ? tickerData.cache.ttlMs
+    : FALLBACK_CACHE_TTL_MS
+
   try {
     window.localStorage.setItem(
       cacheKey,
       JSON.stringify({
         savedAt: Date.now(),
-        fixtures,
+        expiresAt: Date.now() + Math.max(0, ttlMs),
+        items: tickerData.items,
+        status: tickerData.status,
       }),
     )
   } catch {
@@ -141,28 +65,9 @@ function writeCachedFixtures(cacheKey, fixtures) {
   }
 }
 
-function hasApiErrors(errors) {
-  if (!errors) {
-    return false
-  }
-
-  if (Array.isArray(errors)) {
-    return errors.length > 0
-  }
-
-  if (typeof errors === 'object') {
-    return Object.keys(errors).length > 0
-  }
-
-  return Boolean(errors)
-}
-
-function isTickerLeague(match) {
-  return TICKER_LEAGUE_IDS.has(match.league?.id)
-}
-
-function hasApiKey() {
-  return typeof API_KEY === 'string' && API_KEY.trim().length > 0
+function applyTickerState(tickerData, setTickerItems, setStatus) {
+  setTickerItems(tickerData.items)
+  setStatus(tickerData.status === 'ready' ? 'ready' : 'empty')
 }
 
 function SportsTicker() {
@@ -174,48 +79,42 @@ function SportsTicker() {
     const controller = new AbortController()
     const dateKey = getTodayKey()
     const cacheKey = `tiki-talk-fixtures-${CACHE_NAMESPACE}-${dateKey}`
-    let idleCallbackId
-    let fallbackTimerId
-    let cachedStateTimerId
 
-    async function fetchFixtures() {
-      if (!hasApiKey()) {
-        setStatus('error')
+    async function loadFixtures() {
+      const cachedTicker = readCachedTicker(cacheKey)
+
+      if (cachedTicker) {
+        applyTickerState(cachedTicker, setTickerItems, setStatus)
         return
       }
 
       try {
-        const params = new URLSearchParams({
-          date: dateKey,
-          timezone: TICKER_TIME_ZONE,
-        })
-        const response = await fetch(`${API_HOST}/fixtures?${params.toString()}`, {
+        const response = await fetch(SOCCER_TICKER_ENDPOINT, {
           method: 'GET',
-          headers: {
-            'x-apisports-key': API_KEY,
-          },
           signal: controller.signal,
         })
 
         if (!response.ok) {
-          throw new Error(`Fixtures request failed with ${response.status}`)
+          throw new Error(`Ticker request failed with ${response.status}`)
         }
 
-        const data = await response.json()
+        const tickerData = await response.json()
 
-        if (hasApiErrors(data.errors)) {
-          throw new Error('Fixtures request returned API errors')
+        if (!Array.isArray(tickerData.items) || tickerData.status === 'error') {
+          throw new Error('Ticker request returned invalid data')
         }
 
-        const fixtures = Array.isArray(data.response)
-          ? data.response.filter(isTickerLeague).map(normalizeFixture)
-          : []
-
-        writeCachedFixtures(cacheKey, fixtures)
-        setTickerItems(fixtures.map(formatFixture))
-        setStatus(fixtures.length ? 'ready' : 'empty')
+        writeCachedTicker(cacheKey, tickerData)
+        applyTickerState(tickerData, setTickerItems, setStatus)
       } catch (error) {
         if (error.name === 'AbortError') {
+          return
+        }
+
+        const staleTicker = readCachedTicker(cacheKey, { allowExpired: true })
+
+        if (staleTicker) {
+          applyTickerState(staleTicker, setTickerItems, setStatus)
           return
         }
 
@@ -223,25 +122,9 @@ function SportsTicker() {
       }
     }
 
-    const cachedFixtures = readCachedFixtures(cacheKey)
+    loadFixtures()
 
-    if (cachedFixtures) {
-      cachedStateTimerId = window.setTimeout(() => {
-        setTickerItems(cachedFixtures.map(formatFixture))
-        setStatus(cachedFixtures.length ? 'ready' : 'empty')
-      }, 0)
-    } else if ('requestIdleCallback' in window) {
-      idleCallbackId = window.requestIdleCallback(fetchFixtures, { timeout: 3000 })
-    } else {
-      fallbackTimerId = window.setTimeout(fetchFixtures, 1200)
-    }
-
-    return () => {
-      controller.abort()
-      if (idleCallbackId) window.cancelIdleCallback(idleCallbackId)
-      if (fallbackTimerId) window.clearTimeout(fallbackTimerId)
-      if (cachedStateTimerId) window.clearTimeout(cachedStateTimerId)
-    }
+    return () => controller.abort()
   }, [])
 
   useLayoutEffect(() => {
