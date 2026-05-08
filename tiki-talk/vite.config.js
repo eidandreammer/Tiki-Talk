@@ -32,12 +32,21 @@ function soccerTickerApiPlugin(env) {
   }
 }
 
+function normalizeBasePath(basePath = '/') {
+  if (basePath === '' || basePath === '/') {
+    return '/'
+  }
+
+  const withLeadingSlash = basePath.startsWith('/') ? basePath : `/${basePath}`
+  return withLeadingSlash.endsWith('/') ? withLeadingSlash : `${withLeadingSlash}/`
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
   return {
     plugins: [react(), soccerTickerApiPlugin(env)],
-    base: '/Tiki-Talk/',
+    base: normalizeBasePath(env.VITE_BASE_PATH),
   }
 })

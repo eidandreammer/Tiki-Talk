@@ -50,3 +50,19 @@ Import [n8n/tiki-talk-google-sheets-capture.json](n8n/tiki-talk-google-sheets-ca
 npm install
 npm run dev
 ```
+
+## Build path
+
+The production build defaults to root-relative assets, which matches the custom
+domain in [public/CNAME](public/CNAME):
+
+```bash
+npm run build
+```
+
+If you deploy the same build under a subdirectory instead, set `VITE_BASE_PATH`
+before building:
+
+```bash
+VITE_BASE_PATH=/Tiki-Talk/ npm run build
+```
