@@ -211,35 +211,7 @@ function App() {
           </div>
         </section>
 
-        <section className="section section--origin">
-          <div className="site-frame">
-            <div className="origin-panel">
-              <div className="origin-panel__grid">
-                <article className="origin-note">
-                  <h3>Why we chose the name</h3>
-                  <p>
-                    We chose &quot;Tiki-Taka Tiki-Talk&quot; because the title sounds
-                    like the game we love: quick, connected, and full of rhythm.
-                    It turns a famous fútbol idea into conversation, which fits a
-                    podcast built on sharp passing of ideas between hosts and
-                    listeners.
-                  </p>
-                </article>
 
-                <article className="origin-note">
-                  <h3>What tiki-taka means</h3>
-                  <p>
-                    Tiki-taka is a fútbol strategy based on short passing,
-                    constant movement, close support, and patient possession. The
-                    goal is to control space and tempo by keeping the ball moving,
-                    creating triangles, and pulling opponents out of shape before
-                    finding the opening.
-                  </p>
-                </article>
-              </div>
-            </div>
-          </div>
-        </section>
 
 
 
