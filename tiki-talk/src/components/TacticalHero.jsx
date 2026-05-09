@@ -13,9 +13,16 @@ const SEEK_STEP_SECONDS = 1 / 30
 function TacticalHero() {
   const heroRef = useRef(null)
   const videoRef = useRef(null)
+  const imgRef = useRef(null)
   const titleRefs = useRef([])
   const [isPosterLoaded, setIsPosterLoaded] = useState(false)
   const [isVideoReady, setIsVideoReady] = useState(false)
+
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete) {
+      setIsPosterLoaded(true)
+    }
+  }, [])
   const [videoSource, setVideoSource] = useState('')
 
   useEffect(() => {
@@ -146,6 +153,7 @@ function TacticalHero() {
             sizes="100vw"
           />
           <img
+            ref={imgRef}
             className="hero__media-image"
             src={heroPoster1280Jpg}
             srcSet={`${heroPoster1280Jpg} 1280w, ${heroPoster1920Jpg} 1920w`}
@@ -155,7 +163,7 @@ function TacticalHero() {
             alt=""
             fetchPriority="high"
             loading="eager"
-            decoding="async"
+            decoding="sync"
             onLoad={() => setIsPosterLoaded(true)}
           />
         </picture>
@@ -166,9 +174,12 @@ function TacticalHero() {
             src={videoSource}
             muted
             playsInline
+            autoPlay
             preload="auto"
-            poster={heroPoster1280Jpg}
-            onLoadedData={() => setIsVideoReady(true)}
+            onLoadedData={(e) => {
+              e.target.pause()
+              setIsVideoReady(true)
+            }}
           />
         ) : null}
       </div>
