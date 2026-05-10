@@ -199,7 +199,7 @@ function TacticalHero() {
               <span style={{ color: '#b11f1f' }}>Go beyond the pitch.</span>
             </h1>
             <p className="hero__lede">
-              The podcast that debates Fútbol, tactical insights, and the cultures that surround the game.
+              Our podcast covers football matches around the world, reviews tactical breakdowns, and captures the cultures that surround the game.
 
             </p>
           </div>

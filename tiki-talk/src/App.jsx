@@ -205,7 +205,7 @@ function App() {
               <p className="eyebrow">About Tiki-Taka Tiki-Talk</p>
               <h2>Soccer conversations built around the way the game moves.</h2>
               <p className="podcast-intro__lede">
-                A football podcast built on fun debates, live match reactions, football games, and the chaos of the sport we all obsess over.
+                We are an international soccer podcast built on fan interaction, live streaming, and the chaos of the sport we all obsess over. From GOAT debates to Champions League drama, and from unboxing collectibles to live watch along parties, we cover the biggest moments in football with energy and personality. Smart takes, good vibes, and fútbol culture all in one place.
               </p>
             </div>
           </div>
