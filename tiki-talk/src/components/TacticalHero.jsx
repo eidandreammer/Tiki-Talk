@@ -175,7 +175,10 @@ function TacticalHero() {
             muted
             playsInline
             autoPlay
+            disablePictureInPicture
+            disableRemotePlayback
             preload="auto"
+            tabIndex={-1}
             onLoadedData={(e) => {
               e.target.pause()
               setIsVideoReady(true)

@@ -4,6 +4,7 @@ import SiteFooter from './components/SiteFooter'
 import SportsTicker from './components/SportsTicker'
 import TacticalHero from './components/TacticalHero'
 import gianniWebsiteImage from './assets/Gianni Website.png'
+import vinnyImage from './assets/Vinny.png'
 
 const NEWSLETTER_BENEFITS = [
   'Notifications about new episodes, clips, and fresh content drops',
@@ -186,6 +187,7 @@ function App() {
             <nav className="site-nav" aria-label="Primary">
               <a href="#home">Home</a>
               <a href="#about">About</a>
+              <a href="#hosts">Hosts</a>
               <a href="#newsletter">Newsletter</a>
             </nav>
 
@@ -211,9 +213,41 @@ function App() {
           </div>
         </section>
 
+        <section className="section section--hosts" id="hosts">
+          <div className="site-frame section__inner">
+            <div className="hosts-showcase">
+              <div className="hosts-showcase__intro">
+                <p className="eyebrow">The Hosts</p>
+                <h2>Meet the voices behind the soccer chaos.</h2>
+                <p className="hosts-showcase__lede">
+                  The people driving the debates, reactions, and culture around
+                  every Tiki-Taka Tiki-Talk episode.
+                </p>
+              </div>
 
+              <div className="hosts-grid" aria-label="Podcast hosts">
+                <article className="host-card">
+                  <img
+                    className="host-card__image"
+                    src={gianniWebsiteImage}
+                    width="425"
+                    height="520"
+                    alt="Gianni wearing an Argentina jersey"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="host-card__body">
+                    <p className="host-card__role">Host</p>
+                    <h3>Gianni</h3>
+                  </div>
+                </article>
 
-
+                <div className="host-card host-card--placeholder" aria-hidden="true" />
+                <div className="host-card host-card--placeholder" aria-hidden="true" />
+              </div>
+            </div>
+          </div>
+        </section>
 
         <section className="section section--newsletter" id="newsletter">
           <div className="site-frame">
@@ -221,10 +255,10 @@ function App() {
               <div className="newsletter-feature__media">
                 <img
                   className="newsletter-feature__image"
-                  src={gianniWebsiteImage}
+                  src={vinnyImage}
                   width="425"
-                  height="520"
-                  alt="Gianni wearing an Argentina jersey"
+                  height="567"
+                  alt="Vinny playing soccer in a Juventus kit"
                   loading="lazy"
                   decoding="async"
                   fetchPriority="low"
