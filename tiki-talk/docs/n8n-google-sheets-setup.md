@@ -58,14 +58,34 @@ Create a local `.env` file from `.env.example`.
 Copy-Item .env.example .env
 ```
 
-Set the two production webhook URLs from n8n:
+For local testing, n8n must be running on port `5678`:
+
+```bash
+npm run n8n
+```
+
+If you are testing from the n8n editor before activating the workflow, click
+`Listen for test event` on each webhook node and use the `webhook-test` URLs:
+
+```env
+VITE_N8N_NEWSLETTER_WEBHOOK_URL=http://localhost:5678/webhook-test/tiki-talk/newsletter
+VITE_N8N_CLUB_WEBHOOK_URL=http://localhost:5678/webhook-test/tiki-talk/club
+```
+
+After the workflow is saved and activated, use the production webhook URLs from
+n8n:
 
 ```env
 VITE_N8N_NEWSLETTER_WEBHOOK_URL=https://your-n8n-host/webhook/tiki-talk/newsletter
 VITE_N8N_CLUB_WEBHOOK_URL=https://your-n8n-host/webhook/tiki-talk/club
 ```
 
-If you are testing against the n8n editor before activating the workflow, use the `test` webhook URLs temporarily instead.
+With a local active workflow, those production paths would be:
+
+```env
+VITE_N8N_NEWSLETTER_WEBHOOK_URL=http://localhost:5678/webhook/tiki-talk/newsletter
+VITE_N8N_CLUB_WEBHOOK_URL=http://localhost:5678/webhook/tiki-talk/club
+```
 
 ## 6. Activate and test
 
