@@ -503,43 +503,19 @@
 }
 
 .hero h1::before {
-  top: -28px;
-  left: 48px;
-  right: -36px;
+  top: -88px;
+  left: 24px;
+  right: -58px;
   width: auto;
-  height: calc(100% + 42px);
-  border: 1px solid rgba(255, 255, 255, 0.52);
-  border-radius: 46px 82px 42px 94px;
-  background:
-    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.88), transparent 24%),
-    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
-    radial-gradient(circle at 18% 88%, rgba(255, 255, 255, 0.28), transparent 30%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.14) 48%, rgba(255, 255, 255, 0.3));
-  box-shadow:
-    0 28px 70px rgba(0, 0, 0, 0.2),
-    inset 0 1px 1px rgba(255, 255, 255, 0.82),
-    inset 0 -24px 44px rgba(255, 255, 255, 0.12),
-    inset 22px 22px 54px rgba(255, 255, 255, 0.16);
-  opacity: 0.9;
-  transform: rotate(-3deg);
-  backdrop-filter: blur(28px) saturate(1.65) contrast(1.06);
-  -webkit-backdrop-filter: blur(28px) saturate(1.65) contrast(1.06);
+  height: calc(100% + 116px);
+  background: url("./assets/hero-grey-blob.svg") center / 100% 100% no-repeat;
+  filter: drop-shadow(0 28px 52px rgba(0, 0, 0, 0.24));
+  opacity: 0.82;
+  transform: rotate(-6deg);
 }
 
 .hero h1::after {
-  top: -6px;
-  left: 72px;
-  right: -16px;
-  width: auto;
-  height: calc(100% + 8px);
-  border-radius: 42px 74px 38px 86px;
-  background:
-    linear-gradient(112deg, transparent 0 18%, rgba(255, 255, 255, 0.58) 24%, transparent 32% 100%),
-    radial-gradient(ellipse at 74% 32%, rgba(255, 255, 255, 0.48), transparent 22%),
-    radial-gradient(ellipse at 28% 78%, rgba(255, 255, 255, 0.32), transparent 24%);
-  mix-blend-mode: screen;
-  opacity: 0.58;
-  transform: rotate(-3deg);
+  display: none;
 }
 
 .hero__actions-shell {
@@ -727,9 +703,9 @@
   z-index: 0;
   pointer-events: none;
   background-image: url("./assets/tttt-logo-900.avif");
-  background-position: right clamp(-136px, -8vw, -56px) center;
+  background-position: right center;
   background-repeat: no-repeat;
-  background-size: clamp(440px, 46vw, 860px);
+  background-size: clamp(380px, 38vw, 760px);
   opacity: 1;
 }
 
@@ -742,6 +718,16 @@
 .section--club {
   background: #1b1a1a;
   border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.section--club::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("./assets/hero-green-blob.svg") center / 100% 100% no-repeat;
+  pointer-events: none;
+  transform: rotate(-25deg) scale(1.25);
+  opacity: 0.35;
 }
 
 .section--newsletter {
@@ -1089,6 +1075,7 @@
   inset: 0 0 auto;
   height: 4px;
   background: linear-gradient(90deg, #ffffff, rgba(255, 255, 255, 0.42), #ffffff);
+  z-index: 2;
 }
 
 .club-shell__label {
@@ -1172,8 +1159,10 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: transparent;
+  background: url("./assets/hero-red-blob.svg") center / 100% 100% no-repeat;
   pointer-events: none;
+  transform: rotate(-25deg) scale(1.25);
+  opacity: 0.35;
 }
 
 .newsletter-feature__media,
@@ -1187,7 +1176,7 @@
   align-items: center;
   justify-content: center;
   padding: 18px 12px;
-  background: #1b1a1a;
+  background: transparent;
 }
 
 .newsletter-feature__picture {
@@ -1207,7 +1196,7 @@
   align-content: center;
   gap: 0;
   padding: clamp(28px, 4vw, 42px);
-  background-color: #1b1a1a;
+  background-color: transparent;
   color: var(--color-paper);
 }
 
@@ -1373,10 +1362,11 @@
 .site-footer__panel {
   display: grid;
   grid-template-columns:
+    minmax(120px, 0.4fr)
     minmax(160px, 0.68fr)
     minmax(320px, 1.2fr)
     minmax(180px, 0.8fr);
-  grid-template-areas: 'menu subscribe social';
+  grid-template-areas: 'brand menu subscribe social';
   gap: 14px;
   padding: 22px;
   border: none;
@@ -1385,12 +1375,24 @@
   box-shadow: none;
 }
 
+.site-footer__brand,
 .site-footer__menu,
 .site-footer__subscribe,
 .site-footer__social {
   display: grid;
   align-content: start;
   gap: 10px;
+}
+
+.site-footer__brand {
+  grid-area: brand;
+}
+
+.site-footer__logo {
+  width: 100%;
+  max-width: 120px;
+  height: auto;
+  object-fit: contain;
 }
 
 .site-footer__menu {
@@ -1550,10 +1552,9 @@
 
   .hero h1::before {
     right: auto;
-    left: -18px;
-    width: calc(100% + 58px);
-    border-radius: 82px 46px 94px 42px;
-    transform: rotate(2deg);
+    left: -34px;
+    width: calc(100% + 104px);
+    transform: rotate(-5deg);
   }
 
   .hero h1::after {
@@ -1592,8 +1593,8 @@
   .site-footer__panel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
-      'menu social'
-      'subscribe subscribe';
+      'brand menu'
+      'subscribe social';
     gap: 16px;
   }
 
@@ -1645,11 +1646,10 @@
   }
 
   .hero h1::before {
-    top: -14px;
-    left: -8px;
-    width: calc(100% + 28px);
-    height: calc(100% + 24px);
-    border-radius: 42px 70px 38px 78px;
+    top: -48px;
+    left: -24px;
+    width: calc(100% + 72px);
+    height: calc(100% + 68px);
   }
 
   .hero h1::after {
@@ -1789,6 +1789,7 @@
   .site-footer__panel {
     grid-template-columns: 1fr;
     grid-template-areas:
+      'brand'
       'menu'
       'subscribe'
       'social';

@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" fill="none">
   <defs>
     <linearGradient id="blobBase" x1="10" y1="195" x2="858" y2="147" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#303C83" stop-opacity="0"/>
-      <stop offset="0.12" stop-color="#3E4EA8" stop-opacity="0.78"/>
-      <stop offset="0.48" stop-color="#8893D3" stop-opacity="0.88"/>
-      <stop offset="0.84" stop-color="#33408A" stop-opacity="0.74"/>
-      <stop offset="1" stop-color="#303C83" stop-opacity="0"/>
+      <stop offset="0" stop-color="#338038" stop-opacity="0"/>
+      <stop offset="0.12" stop-color="#42A448" stop-opacity="0.78"/>
+      <stop offset="0.48" stop-color="#8AD08F" stop-opacity="0.88"/>
+      <stop offset="0.84" stop-color="#36873B" stop-opacity="0.74"/>
+      <stop offset="1" stop-color="#338038" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="stripeGlow" x1="38" y1="202" x2="813" y2="202" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#3C4CA4" stop-opacity="0"/>
-      <stop offset="0.18" stop-color="#ADB5E1" stop-opacity="0.46"/>
-      <stop offset="0.72" stop-color="#4253B3" stop-opacity="0.58"/>
-      <stop offset="1" stop-color="#4253B3" stop-opacity="0"/>
+      <stop offset="0" stop-color="#40A046" stop-opacity="0"/>
+      <stop offset="0.18" stop-color="#AFDFB2" stop-opacity="0.46"/>
+      <stop offset="0.72" stop-color="#46AF4C" stop-opacity="0.58"/>
+      <stop offset="1" stop-color="#46AF4C" stop-opacity="0"/>
     </linearGradient>
     <radialGradient id="whiteLift" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(141 92) rotate(17) scale(155 83)">
       <stop offset="0" stop-color="#fff" stop-opacity="0.26"/>
@@ -19,9 +19,9 @@
       <stop offset="1" stop-color="#fff" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="deepSpot" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(686 311) rotate(16) scale(177 105)">
-      <stop offset="0" stop-color="#242D61" stop-opacity="0.4"/>
-      <stop offset="0.45" stop-color="#242D61" stop-opacity="0.4"/>
-      <stop offset="1" stop-color="#242D61" stop-opacity="0"/>
+      <stop offset="0" stop-color="#265F29" stop-opacity="0.4"/>
+      <stop offset="0.45" stop-color="#265F29" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#265F29" stop-opacity="0"/>
     </radialGradient>
     <clipPath id="baseShape">
       <path d="M26.4 88.2L140.8 42L290.4 58.8L422.4 21L589.6 50.4L739.2 29.4L853.6 75.6L818.4 176.4L880 252L774.4 348.6L616 323.4L466.4 386.4L308 344.4L140.8 378L8.8 306.6L61.6 210Z"/>

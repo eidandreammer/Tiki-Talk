@@ -17,11 +17,17 @@ const SOCIAL_LINKS = [
   },
 ]
 
+import ttttLogo from '../assets/tttt-logo.png'
+
 function SiteFooter() {
   return (
     <footer className="site-footer" id="join-us">
       <div className="site-frame">
         <div className="site-footer__panel">
+          <div className="site-footer__brand">
+            <img src={ttttLogo} alt="Tiki-Taka Tiki-Talk Logo" className="site-footer__logo" />
+          </div>
+
           <nav className="site-footer__menu" aria-label="Footer">
             <p className="site-footer__label">Menu</p>
             <div className="site-footer__menu-links">
