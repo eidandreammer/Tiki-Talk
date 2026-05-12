@@ -349,11 +349,19 @@ function App() {
     })
 
     try {
+      const submittedAt = new Date()
+      const dateSent = submittedAt.toISOString().slice(0, 10)
+
       const responseData = await submitLead(formConfig.webhookUrl, {
         email,
+        Email: email,
+        formType: formConfig.source,
         source: formConfig.source,
+        sourceUrl: window.location.href,
         pageUrl: window.location.href,
-        submittedAt: new Date().toISOString(),
+        submittedAt: submittedAt.toISOString(),
+        dateSent,
+        'Date Sent': dateSent,
       })
 
       updateLeadForm(formKey, {

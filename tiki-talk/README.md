@@ -1,6 +1,6 @@
 # Tiki Talk
 
-This Vite app now submits the two landing-page email forms to n8n so each form can be saved in a different Google Sheet.
+This Vite app submits the two landing-page email forms to n8n so each form can be saved in Google Sheets and emailed to the team.
 
 ## Webhook configuration
 
@@ -13,8 +13,8 @@ Copy-Item .env.example .env
 Set both webhook URLs:
 
 ```env
-VITE_N8N_NEWSLETTER_WEBHOOK_URL=https://your-n8n-host/webhook/tiki-talk/newsletter
-VITE_N8N_CLUB_WEBHOOK_URL=https://your-n8n-host/webhook/tiki-talk/club
+VITE_N8N_NEWSLETTER_WEBHOOK_URL=https://n8n.bitesites.org/webhook/tiki-talk/newsletter
+VITE_N8N_CLUB_WEBHOOK_URL=https://n8n.bitesites.org/webhook/tiki-talk/club
 ```
 
 For local n8n testing, run:
@@ -59,7 +59,7 @@ current fixtures without exposing the key to the browser bundle.
 
 ## n8n workflow
 
-Import [n8n/tiki-talk-google-sheets-capture.json](n8n/tiki-talk-google-sheets-capture.json) into n8n and then follow [docs/n8n-google-sheets-setup.md](docs/n8n-google-sheets-setup.md).
+Import [n8n/tiki-talk-google-sheets-capture.json](n8n/tiki-talk-google-sheets-capture.json) into n8n and then follow [docs/n8n-google-sheets-setup.md](docs/n8n-google-sheets-setup.md). The workflow path is `Webhook -> Map Lead Data -> Add Row to Google Sheets -> Send Email Notification -> Response` for both newsletter and club submissions.
 
 ## Run locally
 
