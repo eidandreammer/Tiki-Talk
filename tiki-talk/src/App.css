@@ -716,19 +716,10 @@
 }
 
 .section--club {
-  background: #1b1a1a;
+  background: black;
   border-bottom-color: rgba(255, 255, 255, 0.12);
 }
 
-.section--club::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url("./assets/hero-green-blob.svg") center / 100% 100% no-repeat;
-  pointer-events: none;
-  transform: rotate(-25deg) scale(1.25);
-  opacity: 0.35;
-}
 
 .section--newsletter {
   background:
@@ -1069,6 +1060,22 @@
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
 }
 
+.club-shell__card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.club-shell__card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("./assets/hero-blue-blob.svg") center / 100% 100% no-repeat;
+  pointer-events: none;
+  transform: rotate(-45deg) scale(1.5);
+  opacity: 0.35;
+  z-index: 0;
+}
+
 .club-shell__card::before {
   content: '';
   position: absolute;
@@ -1084,6 +1091,27 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-brand-soft);
+}
+
+.club-shell__media {
+  margin-top: 48px;
+  border-radius: 28px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  max-width: 380px;
+}
+
+.club-shell__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  transition: transform 300ms ease;
+}
+
+.club-shell__media:hover .club-shell__image {
+  transform: scale(1.03);
 }
 
 .club-shell__card h3 {

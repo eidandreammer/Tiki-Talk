@@ -24,6 +24,8 @@ import vinnyNewsletter1535Avif from './assets/optimized/vinny-newsletter-1535.av
 import vinnyNewsletter560Jpg from './assets/optimized/vinny-newsletter-560.jpg'
 import vinnyNewsletter840Jpg from './assets/optimized/vinny-newsletter-840.jpg'
 import vinnyNewsletter1120Jpg from './assets/optimized/vinny-newsletter-1120.jpg'
+import clubGraphic from './assets/club-graphic.png'
+
 
 function resolveWebhookUrl(envValue, localPath) {
   if (envValue) {
@@ -573,6 +575,9 @@ function App() {
                   <a className="button button--outline-light" href="#newsletter">
                     View Newsletter
                   </a>
+                </div>
+                <div className="club-shell__media">
+                  <img className="club-shell__image" src={clubGraphic} alt="Join Tiki-Talk Club" loading="lazy" />
                 </div>
               </div>
 
