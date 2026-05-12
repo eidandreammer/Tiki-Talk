@@ -1,9 +1,29 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import SiteFooter from './components/SiteFooter'
 import SportsTicker from './components/SportsTicker'
 import TacticalHero from './components/TacticalHero'
-import gianniWebsiteImage from './assets/Gianni Website.png'
+import gianniHost360Avif from './assets/optimized/gianni-host-360.avif'
+import gianniHost520Avif from './assets/optimized/gianni-host-520.avif'
+import gianniHost720Avif from './assets/optimized/gianni-host-720.avif'
+import gianniHost1080Avif from './assets/optimized/gianni-host-1080.avif'
+import gianniHost360Png from './assets/optimized/gianni-host-360.png'
+import gianniHost520Png from './assets/optimized/gianni-host-520.png'
+import gianniHost720Png from './assets/optimized/gianni-host-720.png'
+import vinnyBlueHost360Avif from './assets/optimized/vinny-blue-host-360.avif'
+import vinnyBlueHost520Avif from './assets/optimized/vinny-blue-host-520.avif'
+import vinnyBlueHost720Avif from './assets/optimized/vinny-blue-host-720.avif'
+import vinnyBlueHost1080Avif from './assets/optimized/vinny-blue-host-1080.avif'
+import vinnyBlueHost360Png from './assets/optimized/vinny-blue-host-360.png'
+import vinnyBlueHost520Png from './assets/optimized/vinny-blue-host-520.png'
+import vinnyBlueHost720Png from './assets/optimized/vinny-blue-host-720.png'
+import vinnyNewsletter560Avif from './assets/optimized/vinny-newsletter-560.avif'
+import vinnyNewsletter840Avif from './assets/optimized/vinny-newsletter-840.avif'
+import vinnyNewsletter1120Avif from './assets/optimized/vinny-newsletter-1120.avif'
+import vinnyNewsletter1535Avif from './assets/optimized/vinny-newsletter-1535.avif'
+import vinnyNewsletter560Jpg from './assets/optimized/vinny-newsletter-560.jpg'
+import vinnyNewsletter840Jpg from './assets/optimized/vinny-newsletter-840.jpg'
+import vinnyNewsletter1120Jpg from './assets/optimized/vinny-newsletter-1120.jpg'
 
 function resolveWebhookUrl(envValue, localPath) {
   if (envValue) {
@@ -40,6 +60,167 @@ const CLUB_HIGHLIGHTS = [
   },
 ]
 
+const HOST_IMAGE_SIZES =
+  '(max-width: 560px) calc(100vw - 24px), (max-width: 1080px) calc((100vw - 38px) / 2), 400px'
+
+const NEWSLETTER_IMAGE_SIZES =
+  '(max-width: 560px) calc(100vw - 68px), (max-width: 1080px) 620px, 560px'
+
+const HOSTS = [
+  {
+    name: 'Gianni',
+    alt: 'Gianni wearing an Argentina jersey',
+    lowAvifSrc: gianniHost360Avif,
+    lowFallbackSrc: gianniHost360Png,
+    avifSrcSet: `${gianniHost520Avif} 520w, ${gianniHost720Avif} 720w, ${gianniHost1080Avif} 1080w`,
+    fallbackSrcSet: `${gianniHost360Png} 360w, ${gianniHost520Png} 520w, ${gianniHost720Png} 720w`,
+    fallbackSrc: gianniHost520Png,
+  },
+  {
+    name: 'Vinny',
+    alt: 'Vinny seated in front of a blue Tiki-Taka Tiki-Talk graphic',
+    lowAvifSrc: vinnyBlueHost360Avif,
+    lowFallbackSrc: vinnyBlueHost360Png,
+    avifSrcSet: `${vinnyBlueHost520Avif} 520w, ${vinnyBlueHost720Avif} 720w, ${vinnyBlueHost1080Avif} 1080w`,
+    fallbackSrcSet: `${vinnyBlueHost360Png} 360w, ${vinnyBlueHost520Png} 520w, ${vinnyBlueHost720Png} 720w`,
+    fallbackSrc: vinnyBlueHost520Png,
+  },
+]
+
+function ProgressivePicture({
+  alt,
+  className,
+  fetchPriority,
+  height,
+  highAvifSrcSet,
+  highFallbackSrc,
+  highFallbackSrcSet,
+  loading = 'lazy',
+  lowAvifSrc,
+  lowFallbackSrc,
+  pictureClassName,
+  sizes,
+  width,
+}) {
+  const pictureRef = useRef(null)
+  const [shouldLoadHighQuality, setShouldLoadHighQuality] = useState(false)
+  const [isHighQualityLoaded, setIsHighQualityLoaded] = useState(false)
+
+  useEffect(() => {
+    const picture = pictureRef.current
+
+    if (!picture) {
+      return undefined
+    }
+
+    let observer
+    let idleCallbackId
+    let timeoutId
+    let isCancelled = false
+
+    const loadHighQuality = () => {
+      if (!isCancelled) {
+        setShouldLoadHighQuality(true)
+      }
+    }
+
+    const scheduleHighQualityLoad = () => {
+      if ('requestIdleCallback' in window) {
+        idleCallbackId = window.requestIdleCallback(loadHighQuality, { timeout: 1400 })
+      } else {
+        timeoutId = window.setTimeout(loadHighQuality, 450)
+      }
+    }
+
+    if (loading === 'eager' || typeof IntersectionObserver === 'undefined') {
+      scheduleHighQualityLoad()
+    } else {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) {
+            return
+          }
+
+          observer.disconnect()
+          scheduleHighQualityLoad()
+        },
+        {
+          rootMargin: '360px 0px',
+        },
+      )
+
+      observer.observe(picture)
+    }
+
+    return () => {
+      isCancelled = true
+      observer?.disconnect()
+
+      if (idleCallbackId) {
+        window.cancelIdleCallback(idleCallbackId)
+      }
+
+      if (timeoutId) {
+        window.clearTimeout(timeoutId)
+      }
+    }
+  }, [loading])
+
+  const handleHighQualityLoad = (event) => {
+    const image = event.currentTarget
+    const showHighQualityImage = () => setIsHighQualityLoaded(true)
+
+    if (typeof image.decode === 'function') {
+      image.decode().catch(() => undefined).finally(showHighQualityImage)
+      return
+    }
+
+    showHighQualityImage()
+  }
+
+  return (
+    <span
+      ref={pictureRef}
+      className={`progressive-picture ${pictureClassName}${
+        isHighQualityLoaded ? ' progressive-picture--loaded' : ''
+      }`}
+    >
+      <picture className="progressive-picture__base">
+        <source type="image/avif" srcSet={lowAvifSrc} />
+        <img
+          className={className}
+          src={lowFallbackSrc}
+          width={width}
+          height={height}
+          alt={alt}
+          loading={loading}
+          decoding="async"
+          fetchPriority={fetchPriority}
+        />
+      </picture>
+
+      {shouldLoadHighQuality ? (
+        <picture className="progressive-picture__full" aria-hidden="true">
+          <source type="image/avif" srcSet={highAvifSrcSet} sizes={sizes} />
+          <img
+            className={className}
+            src={highFallbackSrc}
+            srcSet={highFallbackSrcSet}
+            sizes={sizes}
+            width={width}
+            height={height}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
+            onLoad={handleHighQualityLoad}
+          />
+        </picture>
+      ) : null}
+    </span>
+  )
+}
+
 const FORM_CONFIG = {
   newsletter: {
     webhookUrl: resolveWebhookUrl(
@@ -67,12 +248,30 @@ const FORM_CONFIG = {
   },
 }
 
+const LOCAL_N8N_ORIGIN = 'http://localhost:5678'
+
 function createLeadFormState() {
   return {
     email: '',
     status: 'idle',
     message: '',
   }
+}
+
+function isLocalN8nWebhook(webhookUrl) {
+  return webhookUrl.startsWith(LOCAL_N8N_ORIGIN)
+}
+
+function getLeadSubmitErrorMessage(error, formConfig) {
+  if (error instanceof TypeError && isLocalN8nWebhook(formConfig.webhookUrl)) {
+    return 'Cannot reach local n8n at localhost:5678. Start n8n, then use /webhook-test while testing or activate the workflow and use /webhook.'
+  }
+
+  if (error instanceof Error && error.message) {
+    return error.message
+  }
+
+  return formConfig.fallbackErrorMessage
 }
 
 async function submitLead(webhookUrl, payload) {
@@ -172,11 +371,19 @@ function App() {
     })
 
     try {
+      const submittedAt = new Date()
+      const dateSent = submittedAt.toISOString().slice(0, 10)
+
       const responseData = await submitLead(formConfig.webhookUrl, {
         email,
+        Email: email,
+        formType: formConfig.source,
         source: formConfig.source,
+        sourceUrl: window.location.href,
         pageUrl: window.location.href,
-        submittedAt: new Date().toISOString(),
+        submittedAt: submittedAt.toISOString(),
+        dateSent,
+        'Date Sent': dateSent,
       })
 
       updateLeadForm(formKey, {
@@ -189,12 +396,16 @@ function App() {
 
       updateLeadForm(formKey, {
         status: 'error',
+<<<<<<< HEAD
         message:
           isNetworkError
             ? formConfig.networkErrorMessage
             : error instanceof Error && error.message
             ? error.message
             : formConfig.fallbackErrorMessage,
+=======
+        message: getLeadSubmitErrorMessage(error, formConfig),
+>>>>>>> ae8a58095c7a3f1a55f6fb0c97ac6e75e9f542da
       })
     }
   }
@@ -212,6 +423,7 @@ function App() {
             <nav className="site-nav" aria-label="Primary">
               <a href="#home">Home</a>
               <a href="#about">About</a>
+              <a href="#hosts">Hosts</a>
               <a href="#newsletter">Newsletter</a>
             </nav>
 
@@ -231,56 +443,67 @@ function App() {
               <p className="eyebrow">About Tiki-Taka Tiki-Talk</p>
               <h2>Soccer conversations built around the way the game moves.</h2>
               <p className="podcast-intro__lede">
-                A football podcast built on fun debates, live match reactions, football games, and the chaos of the sport we all obsess over.
+                We are an international soccer podcast built on fan interaction, live streaming, and the chaos of the sport we all obsess over. From GOAT debates to Champions League drama, and from unboxing collectibles to live watch along parties, we cover the biggest moments in football with energy and personality. Smart takes, good vibes, and fútbol culture all in one place.
               </p>
             </div>
           </div>
         </section>
 
-        <section className="section section--origin">
-          <div className="site-frame">
-            <div className="origin-panel">
-              <div className="origin-panel__grid">
-                <article className="origin-note">
-                  <h3>Why we chose the name</h3>
-                  <p>
-                    We chose &quot;Tiki-Taka Tiki-Talk&quot; because the title sounds
-                    like the game we love: quick, connected, and full of rhythm.
-                    It turns a famous fútbol idea into conversation, which fits a
-                    podcast built on sharp passing of ideas between hosts and
-                    listeners.
-                  </p>
-                </article>
+        <section className="section section--hosts" id="hosts">
+          <div className="site-frame section__inner">
+            <div className="hosts-showcase">
+              <div className="hosts-showcase__intro">
+                <p className="eyebrow">The Hosts</p>
+                <h2>Meet the voices behind the soccer chaos.</h2>
+                <p className="hosts-showcase__lede">
+                  The people driving the debates, reactions, and culture around
+                  every Tiki-Taka Tiki-Talk episode.
+                </p>
+              </div>
 
-                <article className="origin-note">
-                  <h3>What tiki-taka means</h3>
-                  <p>
-                    Tiki-taka is a fútbol strategy based on short passing,
-                    constant movement, close support, and patient possession. The
-                    goal is to control space and tempo by keeping the ball moving,
-                    creating triangles, and pulling opponents out of shape before
-                    finding the opening.
-                  </p>
-                </article>
+              <div className="hosts-grid" aria-label="Podcast hosts">
+                {HOSTS.map((host) => (
+                  <article className="host-card" key={host.name}>
+                    <ProgressivePicture
+                      pictureClassName="host-card__picture"
+                      className="host-card__image"
+                      lowAvifSrc={host.lowAvifSrc}
+                      lowFallbackSrc={host.lowFallbackSrc}
+                      highAvifSrcSet={host.avifSrcSet}
+                      highFallbackSrc={host.fallbackSrc}
+                      highFallbackSrcSet={host.fallbackSrcSet}
+                      sizes={HOST_IMAGE_SIZES}
+                      width="720"
+                      height="900"
+                      alt={host.alt}
+                    />
+                    <div className="host-card__body">
+                      <p className="host-card__role">Host</p>
+                      <h3>{host.name}</h3>
+                    </div>
+                  </article>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-
-
         <section className="section section--newsletter" id="newsletter">
           <div className="site-frame">
             <div className="newsletter-feature">
               <div className="newsletter-feature__media">
-                <img
+                <ProgressivePicture
+                  pictureClassName="newsletter-feature__picture"
                   className="newsletter-feature__image"
-                  src={gianniWebsiteImage}
-                  width="425"
-                  height="520"
-                  alt="Gianni wearing an Argentina jersey"
-                  loading="lazy"
-                  decoding="async"
+                  lowAvifSrc={vinnyNewsletter560Avif}
+                  lowFallbackSrc={vinnyNewsletter560Jpg}
+                  highAvifSrcSet={`${vinnyNewsletter840Avif} 840w, ${vinnyNewsletter1120Avif} 1120w, ${vinnyNewsletter1535Avif} 1535w`}
+                  highFallbackSrc={vinnyNewsletter840Jpg}
+                  highFallbackSrcSet={`${vinnyNewsletter840Jpg} 840w, ${vinnyNewsletter1120Jpg} 1120w`}
+                  sizes={NEWSLETTER_IMAGE_SIZES}
+                  width="1535"
+                  height="2048"
+                  alt="Vinny playing soccer in a Juventus kit"
                   fetchPriority="low"
                 />
               </div>
@@ -302,6 +525,7 @@ function App() {
                 </ul>
 
                 <form className="newsletter-form" onSubmit={handleLeadSubmit('newsletter')}>
+                  <p className="coming-soon-banner">Coming soon</p>
                   <label className="sr-only" htmlFor="email">
                     Email address
                   </label>
@@ -376,6 +600,7 @@ function App() {
                   id="club-access-form"
                   onSubmit={handleLeadSubmit('club')}
                 >
+                  <p className="coming-soon-banner coming-soon-banner--club">Coming soon</p>
                   <label className="sr-only" htmlFor="club-email">
                     Email address for club access
                   </label>

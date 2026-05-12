@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "n8n": "npx n8n start",
     "build": "vite build",
     "generate:ticker": "node scripts/writeStaticSoccerTicker.js",
     "lint": "eslint .",

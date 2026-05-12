@@ -29,7 +29,7 @@ async function main() {
   console.log(`Wrote debug soccer ticker to ${debugPath}`)
 
   if (result.status >= 500) {
-    process.exitCode = 1
+    console.warn(`Warning: Soccer ticker API returned status ${result.status}.`)
   }
 }
 
