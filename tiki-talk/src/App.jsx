@@ -5,6 +5,18 @@ import SportsTicker from './components/SportsTicker'
 import TacticalHero from './components/TacticalHero'
 import gianniWebsiteImage from './assets/Gianni Website.png'
 
+function resolveWebhookUrl(envValue, localPath) {
+  if (envValue) {
+    return envValue
+  }
+
+  if (import.meta.env.DEV) {
+    return localPath
+  }
+
+  return ''
+}
+
 const NEWSLETTER_BENEFITS = [
   'Notifications about new episodes, clips, and fresh content drops',
   'Podcast information, schedule updates, and key announcements',
@@ -30,17 +42,27 @@ const CLUB_HIGHLIGHTS = [
 
 const FORM_CONFIG = {
   newsletter: {
-    webhookUrl: import.meta.env.VITE_N8N_NEWSLETTER_WEBHOOK_URL ?? '',
+    webhookUrl: resolveWebhookUrl(
+      import.meta.env.VITE_N8N_NEWSLETTER_WEBHOOK_URL,
+      '/api/lead-capture/newsletter',
+    ),
     source: 'newsletter',
     successMessage: 'Newsletter signup saved. You are on the list for the next drop.',
     missingConfigMessage: 'Newsletter webhook URL is missing. Add VITE_N8N_NEWSLETTER_WEBHOOK_URL.',
+    networkErrorMessage:
+      'Could not reach the newsletter webhook. Start n8n or set VITE_N8N_NEWSLETTER_WEBHOOK_URL.',
     fallbackErrorMessage: 'We could not save your newsletter signup. Try again in a moment.',
   },
   club: {
-    webhookUrl: import.meta.env.VITE_N8N_CLUB_WEBHOOK_URL ?? '',
+    webhookUrl: resolveWebhookUrl(
+      import.meta.env.VITE_N8N_CLUB_WEBHOOK_URL,
+      '/api/lead-capture/club',
+    ),
     source: 'club',
     successMessage: 'Club request saved. We will use this email for members access updates.',
     missingConfigMessage: 'Club webhook URL is missing. Add VITE_N8N_CLUB_WEBHOOK_URL.',
+    networkErrorMessage:
+      'Could not reach the club webhook. Start n8n or set VITE_N8N_CLUB_WEBHOOK_URL.',
     fallbackErrorMessage: 'We could not save your club request. Try again in a moment.',
   },
 }
@@ -163,10 +185,14 @@ function App() {
         message: responseData?.message || formConfig.successMessage,
       })
     } catch (error) {
+      const isNetworkError = error instanceof TypeError
+
       updateLeadForm(formKey, {
         status: 'error',
         message:
-          error instanceof Error && error.message
+          isNetworkError
+            ? formConfig.networkErrorMessage
+            : error instanceof Error && error.message
             ? error.message
             : formConfig.fallbackErrorMessage,
       })
