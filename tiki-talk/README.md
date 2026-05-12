@@ -51,11 +51,88 @@ VITE_SOCCER_TICKER_ENDPOINT=https://your-api-host.example.com/api/soccer-ticker
 ```
 
 The production site at `tikitalk.us` is deployed on GitHub Pages, which cannot
-run serverless functions from the `api/` folder. The Pages workflow runs
-`npm run generate:ticker` after the Vite build to create a static JSON response
-at `/api/soccer-ticker`, then refreshes the deployment hourly. Add the
-`APISPORTS_KEY` repository secret in GitHub Actions so that step can fetch
+run serverless functions from the `api/` folder. Scheduled Pages workflow runs
+call `npm run generate:ticker` after the Vite build to create a static JSON
+response at `/api/soccer-ticker`. The schedule refreshes every 30 minutes, which
+makes up to 48 API-Sports fixture calls per day and stays below the 100/day and
+10/minute API limits.
+
+Push and manual workflow runs do not call API-Sports. They copy the currently
+deployed `https://tikitalk.us/api/soccer-ticker` response into the new Pages
+artifact so code deploys can ship without spending a vendor API call. Add the
+`APISPORTS_KEY` repository secret in GitHub Actions so scheduled runs can fetch
 current fixtures without exposing the key to the browser bundle.
+
+## API-Sports quota guardrails for agents
+
+API-Sports has hard limits of 100 calls per day and 10 calls per minute. Treat
+any command that runs `npm run generate:ticker` or calls
+`getSoccerTickerResponse()` without a warm cache as a possible billable vendor
+API call.
+
+Before making any manual or development API-Sports call, future agents should
+check this section and count scheduled production usage first:
+
+```text
+# API-Sports call ledger template for AI agents.
+# This is a comment-only reminder, not an automatic quota lock.
+# Limits:
+#   per minute: 10 calls
+#   per day: 100 calls
+# Scheduled production usage:
+#   GitHub Pages refresh: up to 48 calls/day, at minutes 9 and 39 each hour
+# Manual/dev usage to account for before calling:
+#   current day, America/New_York: 0 calls
+#   current minute, America/New_York: 0 calls
+```
+
+Agent rules:
+
+- Do not expose the API key to browser code. Use `APISPORTS_KEY`, never
+  `VITE_APISPORTS_KEY`.
+- Do not run `npm run generate:ticker` just to verify a build. Use
+  `npm run build` and `npm run lint` unless live fixture data is required.
+- Push and manual Pages workflow runs reuse the deployed ticker JSON and should
+  not add API-Sports calls.
+- Keep at least 20 calls/day of safety margin for unexpected retries or urgent
+  refreshes. With the 48 scheduled calls/day, avoid more than 32 manual
+  API-Sports calls/day.
+- If unsure whether a command will call API-Sports, inspect the code path before
+  running it.
+
+The comment ledger above helps agents reason about the quota, but it cannot
+guarantee enforcement because README comments do not run, local process memory
+resets, GitHub Actions jobs are isolated, and multiple agents or machines could
+make calls at the same time.
+
+For true enforcement, add a persistent quota guard around the vendor fetch in
+[server/soccerTicker.js](server/soccerTicker.js). The guard should run before
+`fetchFixtures()` and store counters in shared state such as Redis, Vercel KV,
+Cloudflare KV, Supabase, or another database:
+
+```js
+// Pseudocode only. Do not use an in-memory Map for production quota locks.
+const quota = await quotaStore.increment({
+  dayKey: 'api-sports:day:YYYY-MM-DD',
+  minuteKey: 'api-sports:minute:YYYY-MM-DDTHH:mm',
+  ttl: {
+    day: secondsUntilTomorrow,
+    minute: secondsUntilNextMinute,
+  },
+})
+
+if (quota.dayCount > 100 || quota.minuteCount > 10) {
+  throw new Error('API-Sports quota would be exceeded')
+}
+
+const fixtures = await fetchFixtures({ apiKey, dateKey, fetchImpl, signal })
+```
+
+When using a persistent quota guard, the API route can fetch the current counter
+before each vendor call and refuse the request if the next call would exceed
+either limit. On GitHub Pages alone, there is no always-on shared server state,
+so the current safe production strategy is to keep vendor calls in the scheduled
+build workflow and serve static cached JSON to visitors.
 
 ## n8n workflow
 

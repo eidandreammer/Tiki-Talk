@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '9 * * * *'
+    - cron: '9,39 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -46,9 +46,29 @@ jobs:
         run: npm run build
 
       - name: Generate static soccer ticker
+        if: github.event_name == 'schedule'
         run: npm run generate:ticker
         env:
           APISPORTS_KEY: ${{ secrets.APISPORTS_KEY }}
+
+      - name: Reuse deployed soccer ticker
+        if: github.event_name != 'schedule'
+        run: |
+          mkdir -p dist/api
+
+          if curl --fail --silent --show-error --location --max-time 15 \
+            https://tikitalk.us/api/soccer-ticker \
+            --output dist/api/soccer-ticker.tmp \
+            && node -e "JSON.parse(require('node:fs').readFileSync('dist/api/soccer-ticker.tmp', 'utf8'))"; then
+            mv dist/api/soccer-ticker.tmp dist/api/soccer-ticker
+            cp dist/api/soccer-ticker dist/api/soccer-ticker.json
+          else
+            rm -f dist/api/soccer-ticker.tmp
+            fallback_date="$(TZ=America/New_York date +%Y-%m-%d)"
+            generated_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            printf '{\n  "date": "%s",\n  "items": [],\n  "status": "empty",\n  "cache": {\n    "category": "push-build-fallback",\n    "ttlMs": 1800000\n  },\n  "source": "push-build-fallback",\n  "generatedAt": "%s"\n}\n' "$fallback_date" "$generated_at" > dist/api/soccer-ticker
+            cp dist/api/soccer-ticker dist/api/soccer-ticker.json
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4

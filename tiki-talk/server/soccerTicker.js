@@ -31,7 +31,7 @@ const FINISHED_STATUSES = new Set(['FT', 'AET', 'PEN'])
 const memoryCache = new Map()
 
 function getApiKey(env) {
-  return env.APISPORTS_KEY ?? env.API_SPORTS_KEY ?? env.VITE_APISPORTS_KEY ?? ''
+  return env.APISPORTS_KEY ?? env.API_SPORTS_KEY ?? ''
 }
 
 function getTodayKey(now = new Date()) {
