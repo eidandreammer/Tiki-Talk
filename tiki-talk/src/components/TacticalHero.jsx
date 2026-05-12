@@ -199,7 +199,7 @@ function TacticalHero() {
               <span ref={addToRefs} className="hero__title-dash hero__title-dash--second">-</span>
               <span ref={addToRefs} className="hero__title-word hero__title-word--talk">Talk</span>
               <br />
-              <span style={{ color: '#b11f1f' }}>Go beyond the pitch.</span>
+              <span style={{ color: '#b11f1f' }}>Go Beyond the pitch.</span>
             </h1>
             <p className="hero__lede">
               Our podcast covers football matches around the world, reviews tactical breakdowns, and captures the cultures that surround the game.

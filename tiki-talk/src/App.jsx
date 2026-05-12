@@ -392,20 +392,9 @@ function App() {
         message: responseData?.message || formConfig.successMessage,
       })
     } catch (error) {
-      const isNetworkError = error instanceof TypeError
-
       updateLeadForm(formKey, {
         status: 'error',
-<<<<<<< HEAD
-        message:
-          isNetworkError
-            ? formConfig.networkErrorMessage
-            : error instanceof Error && error.message
-            ? error.message
-            : formConfig.fallbackErrorMessage,
-=======
         message: getLeadSubmitErrorMessage(error, formConfig),
->>>>>>> ae8a58095c7a3f1a55f6fb0c97ac6e75e9f542da
       })
     }
   }
