@@ -6,6 +6,7 @@ const MIN_SETTLED_CACHE_TTL_SECONDS = 60 * 60
 const MAX_SETTLED_CACHE_TTL_SECONDS = 12 * 60 * 60
 const STALE_WHILE_REVALIDATE_SECONDS = 60 * 60
 const MEMORY_STALE_TTL_SECONDS = 12 * 60 * 60
+const inFlightRequests = new Map()
 const TICKER_LEAGUE_IDS = new Set([
   39, // Premier League
   140, // La Liga
@@ -34,7 +35,7 @@ function getApiKey(env) {
   return env.APISPORTS_KEY ?? env.API_SPORTS_KEY ?? ''
 }
 
-function getTodayKey(now = new Date()) {
+export function getTodayKey(now = new Date()) {
   const parts = new Intl.DateTimeFormat('en-US', {
     timeZone: TICKER_TIME_ZONE,
     year: 'numeric',
@@ -258,6 +259,23 @@ export async function getSoccerTickerResponse({
     }
   }
 
+  const inFlightRequest = inFlightRequests.get(cacheKey)
+
+  if (inFlightRequest) {
+    const inFlightResult = await inFlightRequest
+
+    return {
+      ...inFlightResult,
+      body: {
+        ...inFlightResult.body,
+        source:
+          inFlightResult.body.source === 'api-sports'
+            ? 'shared-api-sports-request'
+            : inFlightResult.body.source,
+      },
+    }
+  }
+
   if (!apiKey.trim()) {
     return {
       status: 500,
@@ -276,51 +294,63 @@ export async function getSoccerTickerResponse({
     }
   }
 
-  try {
-    const fixtures = await fetchFixtures({ apiKey, dateKey, fetchImpl, signal })
-    const cachePolicy = getCachePolicy(fixtures, now)
-    const result = {
-      status: 200,
-      headers: createHeaders(cachePolicy.ttlSeconds),
-      body: {
-        date: dateKey,
-        items: fixtures.map(formatFixture),
-        status: fixtures.length ? 'ready' : 'empty',
-        cache: {
-          category: cachePolicy.category,
-          ttlMs: cachePolicy.clientTtlMs,
+  const freshRequest = (async () => {
+    try {
+      const fixtures = await fetchFixtures({ apiKey, dateKey, fetchImpl, signal })
+      const cachePolicy = getCachePolicy(fixtures, now)
+      const result = {
+        status: 200,
+        headers: createHeaders(cachePolicy.ttlSeconds),
+        body: {
+          date: dateKey,
+          items: fixtures.map(formatFixture),
+          status: fixtures.length ? 'ready' : 'empty',
+          cache: {
+            category: cachePolicy.category,
+            ttlMs: cachePolicy.clientTtlMs,
+          },
+          source: 'api-sports',
         },
-        source: 'api-sports',
-      },
-    }
+      }
 
-    writeMemoryCache(cacheKey, result, nowMs, cachePolicy.ttlSeconds * 1000)
+      writeMemoryCache(cacheKey, result, nowMs, cachePolicy.ttlSeconds * 1000)
 
-    return result
-  } catch {
-    const staleCached = readStaleMemoryCache(cacheKey, nowMs)
+      return result
+    } catch {
+      const staleCached = readStaleMemoryCache(cacheKey, nowMs)
 
-    if (staleCached) {
+      if (staleCached) {
+        return {
+          ...staleCached,
+          headers: createHeaders(60, 5 * 60),
+        }
+      }
+
       return {
-        ...staleCached,
-        headers: createHeaders(60, 5 * 60),
+        status: 502,
+        headers: {
+          'Cache-Control': 'no-store',
+        },
+        body: {
+          date: dateKey,
+          items: [],
+          status: 'error',
+          cache: {
+            category: 'error',
+            ttlMs: 0,
+          },
+        },
       }
     }
+  })()
 
-    return {
-      status: 502,
-      headers: {
-        'Cache-Control': 'no-store',
-      },
-      body: {
-        date: dateKey,
-        items: [],
-        status: 'error',
-        cache: {
-          category: 'error',
-          ttlMs: 0,
-        },
-      },
+  inFlightRequests.set(cacheKey, freshRequest)
+
+  try {
+    return await freshRequest
+  } finally {
+    if (inFlightRequests.get(cacheKey) === freshRequest) {
+      inFlightRequests.delete(cacheKey)
     }
   }
 }

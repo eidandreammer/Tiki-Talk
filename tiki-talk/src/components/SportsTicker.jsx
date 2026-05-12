@@ -7,6 +7,7 @@ const CACHE_NAMESPACE = 'selected-leagues-v2'
 const TICKER_TIME_ZONE = 'America/New_York'
 const TICKER_PIXELS_PER_SECOND = 94.3
 const MIN_TICKER_DURATION_SECONDS = 17.4
+const pendingTickerLoads = new Map()
 
 function getTodayKey() {
   const parts = new Intl.DateTimeFormat('en-US', {
@@ -74,13 +75,48 @@ function applyTickerState(tickerData, setTickerItems, setStatus) {
   setStatus(tickerData.status === 'ready' ? 'ready' : 'empty')
 }
 
+function loadTickerFromEndpoint(cacheKey) {
+  const pendingTickerLoad = pendingTickerLoads.get(cacheKey)
+
+  if (pendingTickerLoad) {
+    return pendingTickerLoad
+  }
+
+  const tickerLoad = fetch(SOCCER_TICKER_ENDPOINT, {
+    method: 'GET',
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Ticker request failed with ${response.status}`)
+      }
+
+      return response.json()
+    })
+    .then((tickerData) => {
+      if (!Array.isArray(tickerData.items) || tickerData.status === 'error') {
+        throw new Error('Ticker request returned invalid data')
+      }
+
+      writeCachedTicker(cacheKey, tickerData)
+
+      return tickerData
+    })
+    .finally(() => {
+      pendingTickerLoads.delete(cacheKey)
+    })
+
+  pendingTickerLoads.set(cacheKey, tickerLoad)
+
+  return tickerLoad
+}
+
 function SportsTicker() {
   const trackRef = useRef(null)
   const [tickerItems, setTickerItems] = useState([])
   const [status, setStatus] = useState('loading')
 
   useEffect(() => {
-    const controller = new AbortController()
+    let isCurrent = true
     const dateKey = getTodayKey()
     const cacheKey = `tiki-talk-fixtures-${CACHE_NAMESPACE}-${dateKey}`
 
@@ -88,30 +124,20 @@ function SportsTicker() {
       const cachedTicker = readCachedTicker(cacheKey)
 
       if (cachedTicker) {
-        applyTickerState(cachedTicker, setTickerItems, setStatus)
+        if (isCurrent) {
+          applyTickerState(cachedTicker, setTickerItems, setStatus)
+        }
         return
       }
 
       try {
-        const response = await fetch(SOCCER_TICKER_ENDPOINT, {
-          method: 'GET',
-          signal: controller.signal,
-        })
+        const tickerData = await loadTickerFromEndpoint(cacheKey)
 
-        if (!response.ok) {
-          throw new Error(`Ticker request failed with ${response.status}`)
+        if (isCurrent) {
+          applyTickerState(tickerData, setTickerItems, setStatus)
         }
-
-        const tickerData = await response.json()
-
-        if (!Array.isArray(tickerData.items) || tickerData.status === 'error') {
-          throw new Error('Ticker request returned invalid data')
-        }
-
-        writeCachedTicker(cacheKey, tickerData)
-        applyTickerState(tickerData, setTickerItems, setStatus)
-      } catch (error) {
-        if (error.name === 'AbortError') {
+      } catch {
+        if (!isCurrent) {
           return
         }
 
@@ -128,7 +154,9 @@ function SportsTicker() {
 
     loadFixtures()
 
-    return () => controller.abort()
+    return () => {
+      isCurrent = false
+    }
   }, [])
 
   useLayoutEffect(() => {

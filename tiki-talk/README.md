@@ -44,6 +44,14 @@ match state:
 - upcoming matches: 30-minute cache
 - finished or empty ticker: cache longer, up to the next day
 
+Local Vite dev reuses `https://tikitalk.us/api/soccer-ticker` by default so
+refreshing the dev server does not spend API-Sports quota. To intentionally test
+the live API-Sports path locally, set:
+
+```env
+APISPORTS_LIVE_DEV_REQUESTS=true
+```
+
 If the API route is hosted on a different domain than the Vite app, set:
 
 ```env
@@ -53,9 +61,13 @@ VITE_SOCCER_TICKER_ENDPOINT=https://your-api-host.example.com/api/soccer-ticker
 The production site at `tikitalk.us` is deployed on GitHub Pages, which cannot
 run serverless functions from the `api/` folder. Scheduled Pages workflow runs
 call `npm run generate:ticker` after the Vite build to create a static JSON
-response at `/api/soccer-ticker`. The schedule refreshes every 30 minutes, which
-makes up to 48 API-Sports fixture calls per day and stays below the 100/day and
-10/minute API limits.
+response at `/api/soccer-ticker`. The schedule refreshes hourly, which makes up
+to 24 API-Sports fixture calls per day and stays below the 100/day and 10/minute
+API limits.
+
+Scheduled runs first reuse the currently deployed ticker when it was generated
+less than 55 minutes ago for the current New York date. This prevents duplicate
+or delayed workflow runs from spending extra API-Sports calls.
 
 Push and manual workflow runs do not call API-Sports. They copy the currently
 deployed `https://tikitalk.us/api/soccer-ticker` response into the new Pages
@@ -80,7 +92,7 @@ check this section and count scheduled production usage first:
 #   per minute: 10 calls
 #   per day: 100 calls
 # Scheduled production usage:
-#   GitHub Pages refresh: up to 48 calls/day, at minutes 9 and 39 each hour
+#   GitHub Pages refresh: up to 24 calls/day, at minute 9 each hour
 # Manual/dev usage to account for before calling:
 #   current day, America/New_York: 0 calls
 #   current minute, America/New_York: 0 calls
@@ -95,7 +107,7 @@ Agent rules:
 - Push and manual Pages workflow runs reuse the deployed ticker JSON and should
   not add API-Sports calls.
 - Keep at least 20 calls/day of safety margin for unexpected retries or urgent
-  refreshes. With the 48 scheduled calls/day, avoid more than 32 manual
+  refreshes. With the 24 scheduled calls/day, avoid more than 56 manual
   API-Sports calls/day.
 - If unsure whether a command will call API-Sports, inspect the code path before
   running it.
