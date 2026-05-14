@@ -8,6 +8,7 @@ const tickerDebugFile = new URL('../dist/api/soccer-ticker.json', import.meta.ur
 const DEPLOYED_TICKER_URL =
   process.env.SOCCER_TICKER_REUSE_URL ?? 'https://tikitalk.us/api/soccer-ticker'
 const DEFAULT_MIN_REFRESH_SECONDS = 55 * 60
+const NON_REUSABLE_SOURCES = new Set(['dev-static-fallback', 'push-build-fallback'])
 
 async function writeJsonFile(fileUrl, data) {
   await mkdir(new URL('.', fileUrl), { recursive: true })
@@ -30,6 +31,8 @@ function isReusableTicker(tickerData, now = new Date()) {
     !Array.isArray(tickerData.items) ||
     typeof tickerData.status !== 'string' ||
     tickerData.status === 'error' ||
+    NON_REUSABLE_SOURCES.has(tickerData.source) ||
+    NON_REUSABLE_SOURCES.has(tickerData.cache?.category) ||
     typeof tickerData.generatedAt !== 'string' ||
     tickerData.date !== getTodayKey(now)
   ) {

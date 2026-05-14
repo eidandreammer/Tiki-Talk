@@ -59,7 +59,7 @@ jobs:
           if curl --fail --silent --show-error --location --max-time 15 \
             https://tikitalk.us/api/soccer-ticker \
             --output dist/api/soccer-ticker.tmp \
-            && node -e "const ticker = JSON.parse(require('node:fs').readFileSync('dist/api/soccer-ticker.tmp', 'utf8')); if (!Array.isArray(ticker.items) || ticker.status === 'error') process.exit(1);"; then
+            && node -e "const ticker = JSON.parse(require('node:fs').readFileSync('dist/api/soccer-ticker.tmp', 'utf8')); const fallbackSources = new Set(['dev-static-fallback', 'push-build-fallback']); if (!Array.isArray(ticker.items) || ticker.status === 'error' || fallbackSources.has(ticker.source) || fallbackSources.has(ticker.cache?.category)) process.exit(1);"; then
             mv dist/api/soccer-ticker.tmp dist/api/soccer-ticker
             cp dist/api/soccer-ticker dist/api/soccer-ticker.json
           else
