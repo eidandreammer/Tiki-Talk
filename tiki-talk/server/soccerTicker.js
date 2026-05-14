@@ -225,13 +225,18 @@ async function fetchFixtures({ apiKey, dateKey, fetchImpl, signal }) {
   })
 
   if (!response.ok) {
-    throw new Error(`Fixtures request failed with ${response.status}`)
+    const errorBody = await response.text().catch(() => '')
+    const details = errorBody ? `: ${errorBody.slice(0, 500)}` : ''
+
+    throw new Error(`Fixtures request failed with ${response.status}${details}`)
   }
 
   const data = await response.json()
 
   if (hasApiErrors(data.errors)) {
-    throw new Error('Fixtures request returned API errors')
+    throw new Error(
+      `Fixtures request returned API errors: ${JSON.stringify(data.errors).slice(0, 500)}`,
+    )
   }
 
   return Array.isArray(data.response) ? data.response.filter(isTickerLeague) : []
@@ -316,7 +321,9 @@ export async function getSoccerTickerResponse({
       writeMemoryCache(cacheKey, result, nowMs, cachePolicy.ttlSeconds * 1000)
 
       return result
-    } catch {
+    } catch (error) {
+      console.error('Soccer ticker API refresh failed:', error)
+
       const staleCached = readStaleMemoryCache(cacheKey, nowMs)
 
       if (staleCached) {

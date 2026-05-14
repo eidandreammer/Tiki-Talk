@@ -29,6 +29,7 @@ function isReusableTicker(tickerData, now = new Date()) {
     !tickerData ||
     !Array.isArray(tickerData.items) ||
     typeof tickerData.status !== 'string' ||
+    tickerData.status === 'error' ||
     typeof tickerData.generatedAt !== 'string' ||
     tickerData.date !== getTodayKey(now)
   ) {
@@ -78,6 +79,11 @@ async function main() {
   const now = new Date()
   const reusableTicker = await readReusableDeployedTicker(now)
   const result = reusableTicker ? null : await getSoccerTickerResponse({ now })
+
+  if (result?.status >= 500) {
+    throw new Error(`Soccer ticker API returned status ${result.status}.`)
+  }
+
   const body = reusableTicker ?? {
     ...result.body,
     generatedAt: now.toISOString(),
@@ -97,9 +103,6 @@ async function main() {
     console.log(`Reused fresh deployed soccer ticker from ${DEPLOYED_TICKER_URL}`)
   }
 
-  if (result?.status >= 500) {
-    console.warn(`Warning: Soccer ticker API returned status ${result.status}.`)
-  }
 }
 
 main().catch((error) => {

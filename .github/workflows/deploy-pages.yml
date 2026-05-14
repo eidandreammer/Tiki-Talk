@@ -46,20 +46,20 @@ jobs:
         run: npm run build
 
       - name: Generate static soccer ticker
-        if: github.event_name == 'schedule'
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: npm run generate:ticker
         env:
           APISPORTS_KEY: ${{ secrets.APISPORTS_KEY }}
 
       - name: Reuse deployed soccer ticker
-        if: github.event_name != 'schedule'
+        if: github.event_name == 'push'
         run: |
           mkdir -p dist/api
 
           if curl --fail --silent --show-error --location --max-time 15 \
             https://tikitalk.us/api/soccer-ticker \
             --output dist/api/soccer-ticker.tmp \
-            && node -e "JSON.parse(require('node:fs').readFileSync('dist/api/soccer-ticker.tmp', 'utf8'))"; then
+            && node -e "const ticker = JSON.parse(require('node:fs').readFileSync('dist/api/soccer-ticker.tmp', 'utf8')); if (!Array.isArray(ticker.items) || ticker.status === 'error') process.exit(1);"; then
             mv dist/api/soccer-ticker.tmp dist/api/soccer-ticker
             cp dist/api/soccer-ticker dist/api/soccer-ticker.json
           else
