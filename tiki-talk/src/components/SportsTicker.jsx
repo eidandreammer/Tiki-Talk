@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 const SOCCER_TICKER_ENDPOINT =
   import.meta.env.VITE_SOCCER_TICKER_ENDPOINT ?? '/api/soccer-ticker'
 const FALLBACK_CACHE_TTL_MS = 30 * 60 * 1000
-const CACHE_NAMESPACE = 'selected-leagues-v2'
+const CACHE_NAMESPACE = 'selected-leagues-v3'
 const TICKER_TIME_ZONE = 'America/New_York'
 const TICKER_PIXELS_PER_SECOND = 94.3
 const MIN_TICKER_DURATION_SECONDS = 17.4
